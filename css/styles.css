@@ -1,0 +1,105 @@
+.app-header {
+    background-color: #111;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.logo {
+    text-decoration: none;
+    color: white;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+.app-header .nav-link {
+    color: #fff !important;
+}
+
+.app-header .nav-link:hover {
+    color: #0d6efd !important;
+}
+.nav-link:hover {
+    color: #0d6efd;
+}
+
+.active-link {
+    color: #0d6efd !important;
+    font-weight: 600;
+}
+.page-login .btn-login-header {
+    display: none;
+}
+.app-footer {
+    background-color: #111;
+    color: #ccc;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Estilos para enlaces en el pie de página */
+.footer-link {
+    text-decoration: none;
+    color: #ccc;
+    transition: 0.3s;
+}
+
+.footer-link:hover {
+    color: #0d6efd;
+}
+
+.hero-section {
+    background: linear-gradient(135deg, #f5f3ef 0%, #ffffff 100%);
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+}
+.hero-section .btn {
+    padding: 12px 30px;
+    border-radius: 30px;
+    transition: 0.3s ease;
+}
+
+.hero-section .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+/*Movimiento para los cards de la sección de contacto*/
+.card {
+  border: none;
+  border-radius: 12px;
+  transition: 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.08);
+}
+
+:root {
+    --main-color: #1e4db7; /* ejemplo azul más institucional */
+}
+
+.btn-primary {
+    background-color: var(--main-color);
+    border-color: var(--main-color);
+}
+
+.btn-primary:hover {
+    background-color: #163c8f;
+    border-color: #163c8f;
+}
+/*Animación suave */
+.card-proceso {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease;
+}
+
+.card-proceso.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Hover elegante */
+.card-proceso:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}

@@ -1,0 +1,18 @@
+/* Fondo general */
+.login-bg {
+    background: #f5f3ef;
+}
+
+/* Contenedor principal */
+.login-wrapper {
+    max-width: 900px;
+    margin: auto;
+    border-radius: 20px;
+}
+
+/* Imagen lateral */
+.login-image {
+    background: url('../img/login-image.jpg') center center/cover no-repeat;
+    height: 100%;
+    min-height: 500px;
+}
