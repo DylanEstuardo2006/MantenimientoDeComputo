@@ -16,3 +16,29 @@
     height: 100%;
     min-height: 500px;
 }
+.login-info {
+    border-top: 1px solid #eee;
+}
+
+.login-info i {
+    transition: 0.3s;
+}
+
+.login-info i:hover {
+    transform: scale(1.1);
+}
+/* Sección inferior del login */
+.login-extra{
+    background: #f5f3ef;
+}
+
+/* Cards suaves */
+.login-card{
+    border-radius: 14px;
+    transition: 0.3s;
+}
+
+.login-card:hover{
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+}

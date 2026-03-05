@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mantenimiento de Equipos</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/pages/servicios.css">
+</head>
+
+<body class="page-public d-flex flex-column min-vh-100">
+    <!---Agrega toda la altura de la pantalla y centrar contenido-->
+    <header class="app-header">
+        <div class="container py-3">
+            <nav class="navbar navbar-expand-lg navbar-dark p-0">
+
+                <!-- Logo -->
+                <a class="navbar-brand fw-bold fs-4" href="index.html">
+                    Sistema<span class="text-primary">Mantenimiento</span>
+                </a>
+
+                <!-- Botón hamburguesa -->
+                <button style="display: none;" class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarPublic" aria-controls="navbarPublic" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Contenido colapsable -->
+                <div class="collapse navbar-collapse" id="navbarPublic">
+
+                    <!-- Navegación -->
+                    <ul class="navbar-nav ms-auto me-3 mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a style="display: none;" class="nav-link active-link" href="mapaDeSitio.html">Mapa de
+                                Sitio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a style="display: none;" class="nav-link active-link" href="index.html">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a style="display: none;" class="nav-link" href="servicios.html">Servicios</a>
+                        </li>
+                        <li class="nav-item">
+                            <a style="display: none;" class="nav-link" href="contactos.html">Contacto</a>
+                        </li>
+                    </ul>
+
+                    <!-- Acciones -->
+                    <div class="d-flex">
+                        <a style="display: none;" href="login.html" class="btn btn-primary btn-login-header me-2">
+                            Iniciar sesión
+                        </a>
+
+                        <a href="#" class="btn btn-danger btn-logout-header d-none">
+                            Cerrar sesión
+                        </a>
+                    </div>
+
+                </div>
+            </nav>
+        </div>
+    </header>
+    <main class="flex-fill">
+        <section class="py-5 bg-light">
+            <div class="container">
+
+                <div class="text-center mb-5">
+                    <h2 class="fw-bold">Mapa de Sitio</h2>
+                    <p class="text-muted">
+                        Bienvenido al mapa de sitio del Sistema de Mantenimiento de Equipos. Aquí encontrarás una visión
+                        general de las secciones principales y funcionalidades que ofrecemos para gestionar el
+                        mantenimiento de tus equipos de manera eficiente y
+                    </p>
+                </div>
+
+                <div class="row g-4">
+
+                    <!-- Pagina Principal -->
+                    <div onclick="window.location.href='index.html'" class="col-md-6 col-lg-3">
+                        <div class="card shadow-sm h-100 text-center p-4">
+                            <i class="bi bi-house fs-1 text-primary mb-3"></i>
+                            <h5 class="fw-bold">Pagina Principal</h5>
+                            <p class="text-muted">
+                                Acceso a la página principal con información general, noticias y enlaces rápidos
+                                para una navegación fácil.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Servicios-->
+                    <div onclick="window.location.href='servicios.html'" class="col-md-6 col-lg-3">
+                        <div class="card shadow-sm h-100 text-center p-4">
+                            <i class="bi bi-briefcase fs-1 text-primary mb-3"></i>
+                            <h5 class="fw-bold">Servicios</h5>
+                            <p class="text-muted">
+                                Descripción detallada de los servicios de mantenimientos y lo que abarca
+                                el área de mantenimiento tanto correctivo y preventivo para equipos e instalaciones.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Contactos-->
+                    <div onclick="window.location.href='contactos.html'" class="col-md-6 col-lg-3">
+                        <div class="card shadow-sm h-100 text-center p-4">
+                            <i class="bi bi-telephone-forward fs-1 text-primary mb-3"></i>
+                            <h5 class="fw-bold">Contactos</h5>
+                            <p class="text-muted">
+                                Contacta con nuestra institución para consultas, 
+                                soporte técnico o cualquier información adicional que necesites.    
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Login -->
+                    <div onclick="window.location.href='login.html'" class="col-md-6 col-lg-3">
+                        <div class="card shadow-sm h-100 text-center p-4">
+                            <i class="bi bi-person-circle fs-1 text-primary mb-3"></i>
+                            <h5 class="fw-bold">Login</h5>
+                            <p class="text-muted">
+                                Logeo para la pagina de administración para el personal autorizado,
+                                donde podrán gestionar los mantenimientos, equipos y usuarios del sistema.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- FOOTER -->
+    <footer class="app-footer text-center py-3 mt-auto">
+        <div class="container">
+            <small>© 2026 Sistema de Mantenimiento - Todos los derechos reservados</small>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+    <script src="js/main.js"></script>
+    <script src="js/login.js"></script>
+</body>
+
+</html>
