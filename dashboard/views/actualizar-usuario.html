@@ -1,62 +1,63 @@
-<div class="card shadow-sm p-4">
+<div class="card shadow border-0 overflow-hidden">
+    <div class="card-header bg-black text-white py-3">
+        <h5 class="mb-0 fw-bold"><i class="bi bi-pencil-square me-2"></i> Gestión de Usuario: <span class="text-muted fw-light">Actualizar Datos</span></h5>
+    </div>
 
+    <div class="card-body p-4">
+        <form id="formActualizarUsuario">
+            <div class="row g-3"> <div class="col-12 border-bottom mb-2">
+                    <p class="text-primary small fw-bold mb-1 text-uppercase">Información Personal</p>
+                </div>
 
-    <h4 class="fw-bold mb-4">Actualizar Usuario</h4>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label small text-muted">Nombre</label>
+                    <input type="text" class="form-control bg-light" id="nombre" placeholder="Nombre" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label small text-muted">Apellido Paterno</label>
+                    <input type="text" class="form-control bg-light" id="apellidoPaterno" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label small text-muted">Apellido Materno</label>
+                    <input type="text" class="form-control bg-light" id="apellidoMaterno" required>
+                </div>
 
-    <form id="formCrearUsuario">
+                <div class="col-12 border-bottom mt-4 mb-2">
+                    <p class="text-primary small fw-bold mb-1 text-uppercase">Datos de la Cuenta</p>
+                </div>
 
-        <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label small text-muted">Matrícula (No editable)</label>
+                    <input type="text" class="form-control-plaintext border-bottom ps-2" id="matricula" readonly>
+                </div>
 
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Nombre</label>
-                <input type="text" class="form-control" id="nombre" placeholder="Nombre" required>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label small text-muted">Teléfono de Contacto</label>
+                    <input type="text" class="form-control" id="telefono" required>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label small text-muted">Rol de Usuario</label>
+                    <select class="form-select border-primary" id="rol" required>
+                        </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label small text-muted">Cambiar Contraseña (Opcional)</label>
+                    <input type="password" class="form-control" id="password" placeholder="Dejar en blanco para no cambiar">
+                </div>
             </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Apellido Paterno</label>
-                <input type="text" class="form-control" id="apellidoPaterno" placeholder="Apellido Paterno" required>
+
+            <hr class="my-4">
+
+            <div class="d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-outline-secondary px-4" onclick="cargarVista('views/usuarios.html')">
+                    Cancelar
+                </button>
+                <button type="submit" class="btn btn-warning px-4 fw-bold">
+                    Guardar Cambios
+                </button>
             </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Apellido Materno</label>
-                <input type="text" class="form-control" id="apellidoMaterno" placeholder="Apellido Materno" required>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Telefono</label>
-                <input type="text" class="form-control" id="telefono" placeholder="Telefono" required>
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Matrícula</label>
-                <input type="text" class="form-control" id="matricula" placeholder="Matricula" required>
-            </div>
-
-
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Contraseña</label>
-                <input type="password" class="form-control" id="password" placeholder="contraseni">
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Rol</label>
-                <select class="form-select" id="rol" required>
-                    <option value="">Seleccione un rol</option>
-                </select>
-            </div>
-
-
-        </div>
-
-        <div class="d-flex justify-content-between align-items-center p-3 ">
-            <!-- Botón Izquierda Guardar usuario -->
-           <button type="submit" class="btn btn-primary">
-                Actualizar Usuario
-            </button>
-
-            <!-- Botón Derecha regresar -->
-            <button type="button" class="btn btn-warning" onclick="cargarVista('views/usuarios.html')" id="btnRegresarUsuarios">
-               Regresar 
-            </button>
-        </div>
-    </form>
-
+        </form>
+    </div>
 </div>
-<script src="../dashboard.js"></script>

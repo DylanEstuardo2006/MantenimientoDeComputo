@@ -1,62 +1,88 @@
-<div class="card shadow-sm p-4">
+<div class="card border-0 shadow-sm rounded-4">
+    <div class="card-header bg-primary bg-gradient text-white py-3 px-4">
+        <h5 class="mb-0 fw-bold">
+            <i class="bi bi-person-plus-fill me-2"></i> Registro de Nuevo Usuario
+        </h5>
+    </div>
 
+    <div class="card-body p-4">
+        <form id="formCrearUsuario">
 
-    <h4 class="fw-bold mb-4">Crear Usuario</h4>
-
-    <form id="formCrearUsuario">
-
-        <div class="row">
-
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Nombre</label>
-                <input type="text" class="form-control" id="nombre" placeholder="Nombre" required>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Apellido Paterno</label>
-                <input type="text" class="form-control" id="apellidoPaterno" placeholder="Apellido Paterno" required>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Apellido Materno</label>
-                <input type="text" class="form-control" id="apellidoMaterno" placeholder="Apellido Materno" required>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Telefono</label>
-                <input type="text" class="form-control" id="telefono" placeholder="Telefono" required>
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Matrícula</label>
-                <input type="text" class="form-control" id="matricula" placeholder="Matricula" required>
-            </div>
-
-
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Contraseña</label>
-                <input type="password" class="form-control" id="password" placeholder="contrasenia" required>
+            <div class="mb-4">
+                <h6 class="text-uppercase text-muted fw-bold small mb-3 shadow-none" style="letter-spacing: 1px;">
+                    <i class="bi bi-person-lines-fill me-1"></i> Información Personal
+                </h6>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Nombre(s)</label>
+                        <input type="text" class="form-control form-control-lg fs-6" id="nombre" placeholder="Ej: Juan"
+                            required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Apellido Paterno</label>
+                        <input type="text" class="form-control form-control-lg fs-6" id="apellidoPaterno"
+                            placeholder="Pérez" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Apellido Materno</label>
+                        <input type="text" class="form-control form-control-lg fs-6" id="apellidoMaterno"
+                            placeholder="García" required>
+                    </div>
+                </div>
             </div>
 
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Rol</label>
-                <select class="form-select" id="rol" required>
-                    <option value="">Seleccione un rol</option>
-                </select>
+            <hr class="text-secondary opacity-25">
+
+            <div class="mb-4 mt-4">
+                <h6 class="text-uppercase text-muted fw-bold small mb-3 shadow-none" style="letter-spacing: 1px;">
+                    <i class="bi bi-shield-lock-fill me-1"></i> Seguridad y Contacto
+                </h6>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold">Matrícula / ID</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="bi bi-card-text"></i></span>
+                            <input type="text" class="form-control form-control-lg fs-6" id="matricula"
+                                placeholder="20230001" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold">Teléfono</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="bi bi-telephone"></i></span>
+                            <input type="text" class="form-control form-control-lg fs-6" id="telefono"
+                                placeholder="55 1234 5678" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold">Contraseña</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="bi bi-key"></i></span>
+                            <input type="password" class="form-control form-control-lg fs-6" id="password"
+                                placeholder="••••••••" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold">Rol asignado</label>
+                        <select class="form-select form-select-lg fs-6 border-primary-subtle" id="selectRoles" required>
+                            <option disabled selected>Selecciona un nivel de acceso...</option>
+                        </select>
+                    </div>
+                </div>
             </div>
 
+            <div class="mt-5 d-flex flex-column-reverse flex-sm-row justify-content-sm-between gap-3">
 
-        </div>
+                <button type="button" class="btn btn-light text-secondary fw-semibold px-4 border py-2 py-sm-3"
+                    onclick="cargarVista('views/usuarios.html')">
+                    <i class="bi bi-arrow-left me-2"></i>Regresar
+                </button>
 
-        <div class="d-flex justify-content-between align-items-center p-3 ">
-            <!-- Botón Izquierda Guardar usuario -->
-           <button type="submit" class="btn btn-primary">
-                Guardar Usuario
-            </button>
+                <button type="submit" class="btn btn-primary px-5 shadow-sm fw-bold py-2 py-sm-3">
+                    <i class="bi bi-check-circle me-2"></i>Guardar Usuario
+                </button>
 
-            <!-- Botón Derecha regresar -->
-            <button type="button" class="btn btn-warning" onclick="cargarVista('views/usuarios.html')" id="btnRegresarUsuarios">
-               Regresar 
-            </button>
-        </div>
-    </form>
-
+            </div>
+        </form>
+    </div>
 </div>
-<script src="../dashboard.js"></script>

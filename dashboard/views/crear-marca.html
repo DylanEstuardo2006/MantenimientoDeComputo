@@ -1,0 +1,30 @@
+<div class="card border-0 shadow-sm rounded-4">
+    <div class="card-header bg-success bg-gradient text-white py-3 px-4">
+        <h5 class="mb-0 fw-bold">
+            <i class="bi bi-tag-fill me-2"></i> Registrar Nueva Marca
+        </h5>
+    </div>
+
+    <div class="card-body p-4">
+        <form id="formCrearMarca">
+            <div class="row g-3">
+                <div class="col-md-12 mb-3">
+                    <label class="form-label small fw-semibold">Nombre de la Marca</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light"><i class="bi bi-patch-check"></i></span>
+                        <input type="text" class="form-control form-control-lg fs-6" id="nombreMarca" placeholder="Ej: Nike, Apple, Samsung..." required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex flex-column-reverse flex-sm-row justify-content-sm-between gap-3">
+                <button type="button" class="btn btn-light text-secondary fw-semibold px-4 border" onclick="cargarVista('views/marcas.html')">
+                    <i class="bi bi-arrow-left me-2"></i>Regresar
+                </button>
+                <button type="submit" class="btn btn-success px-5 shadow-sm fw-bold">
+                    <i class="bi bi-plus-circle me-2"></i>Guardar Marca
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,8 +1,8 @@
 // URL de la API de Roles de Usuario
-const urlApi = 'https://pratica-5b-node-s1hu.vercel.app/api/';
+const urlApi = 'https://pratica-5b-node-s1hu.vercel.app/api/roles';
 
 function cargarRoles(){
-    fetch(urlApi + "roles")
+    fetch(urlApi)
     .then(res => res.json())
     .then(data => {
         const select = document.getElementById("selectRoles");
@@ -14,19 +14,6 @@ function cargarRoles(){
                 </option>
             `;
         });
-    });
-}
-
-document.addEventListener('DOMContentLoaded',() =>
-{
-  cargarRoles();
-});
-
-function cargarUsuarios()
-{
-    fetch(urlApi + "usuarios")
-    .then(res => res.json())
-    .then(data => {
-        
     })
+    .catch(err => console.error("Error al cargar roles:", err));
 }
