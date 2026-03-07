@@ -2,25 +2,36 @@ window.cargarVista = function (ruta) {
     fetch(ruta)
         .then(response => response.text())
         .then(data => {
-
             document.getElementById("contenido-principal").innerHTML = data;
 
-            // Ahora vigilamos las DOS rutas
+            // --- LÓGICA DE USUARIOS ---
             if (ruta.includes('crear-usuario.html') || ruta.includes('actualizar-usuario.html')) {
-                if (typeof cargarRoles === 'function') {
-                    cargarRoles();
+                if (typeof inicializarModuloUsuarios === 'function') {
+                    inicializarModuloUsuarios();
                 }
             }
-            // Dentro de window.cargarVista, en la sección de los "if"
-            if (ruta.includes('crear-marca.html') || ruta.includes('marcas.html')) {
-                listarMarcas();
+            // --- LÓGICA DE MARCAS ---
+            if (ruta.includes('marcas.html') || ruta.includes('crear-marca.html') || ruta.includes('actualizar-marca.html')) {
+                if (typeof inicializarModuloMarcas === 'function') {
+                    inicializarModuloMarcas(ruta);
+                }
             }
+
+            // --- LÓGICA DE MODELOS ---
+            if (ruta.includes('modelos.html') || ruta.includes('crear-modelo.html') || ruta.includes('actualizar-modelo.html')) {
+                if (typeof inicializarModuloModelos === 'function') {
+                    inicializarModuloModelos(ruta);
+                }
+            }
+            // --- LÓGICA DE UI (Sidebar) ---
             if (window.innerWidth < 992) {
                 sidebar.classList.remove("show-sidebar");
                 overlay.classList.remove("show");
             }
         });
 }
+
+
 // botones
 const btnMenu = document.getElementById("btnMenu");
 const sidebar = document.getElementById("sidebar");
