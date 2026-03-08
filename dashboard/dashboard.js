@@ -11,7 +11,7 @@ window.cargarVista = function (ruta) {
                 }
             }
             // --- LÓGICA DE MARCAS ---
-            if (ruta.includes('marcas.html') || ruta.includes('crear-marca.html') || ruta.includes('actualizar-marca.html')) {
+            if (ruta.includes('marcas.html') || ruta.includes('crear-marca.html') || ruta.includes('actualizar-marcas.html')) {
                 if (typeof inicializarModuloMarcas === 'function') {
                     inicializarModuloMarcas(ruta);
                 }
@@ -68,3 +68,4 @@ window.addEventListener("resize", () => {
         overlay.classList.remove("show");
     }
 });
+
