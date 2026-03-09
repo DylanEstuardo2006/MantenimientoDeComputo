@@ -50,7 +50,7 @@ function inicializarModuloModelos(ruta) {
         const btnBorrar = document.getElementById("btnConfirmarBorrado");
 
         if (btnBorrar) {
-            btnBorrar.onclick = confirmarBorradoFinal;
+            btnBorrar.onclick = confirmarBorradoModelosFinal;
         }
     }
 
@@ -68,7 +68,7 @@ function inicializarModuloModelos(ruta) {
         if (idModeloAEditar) {
 
             // cargamos los datos en el formulario
-            cargarDatosEnFormulario(idModeloAEditar);
+            cargarDatosEnFormularioModelos(idModeloAEditar);
         }
     }
 
@@ -186,7 +186,7 @@ function listarModelos() {
                         <!-- BOTÓN ELIMINAR -->
                         <button 
                             class="btn btn-sm btn-outline-danger"
-                            onclick="prepararEliminacion(${modelo.idModelo}, '${modelo.nombreModelo}')"
+                            onclick="prepararEliminacionModelos(${modelo.idModelo}, '${modelo.nombreModelo}')"
                         >
                             <i class="bi bi-trash"></i>
                         </button>
@@ -256,7 +256,7 @@ function configurarBuscadorModelos() {
    Abre el modal y guarda el ID
 ====================================================== */
 
-window.prepararEliminacion = function (id, nombre) {
+window.prepararEliminacionModelos = function (id, nombre) {
 
     idModeloABorrar = id;
 
@@ -279,7 +279,7 @@ window.prepararEliminacion = function (id, nombre) {
    Se ejecuta cuando el usuario confirma eliminar
 ====================================================== */
 
-function confirmarBorradoFinal() {
+function confirmarBorradoModelosFinal() {
 
     // Verificamos que exista un ID guardado
     if (!idModeloABorrar) return;
@@ -324,7 +324,7 @@ function confirmarBorradoFinal() {
    FUNCIÓN: CARGAR DATOS EN FORMULARIO (EDITAR)
 ====================================================== */
 
-function cargarDatosEnFormulario(id) {
+function cargarDatosEnFormularioModelos(id) {
 
     fetch(`${urlApiModelos}/${id}`, { headers: obtenerHeaders() })
 

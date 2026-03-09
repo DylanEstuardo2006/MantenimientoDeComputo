@@ -62,7 +62,7 @@ function listarMarcas() {
                             <i class="bi bi-pencil"></i>
                         </button>
                         <button class="btn btn-sm btn-outline-danger"
-                                onclick="prepararEliminacion(${marca.idMarca}, '${marca.nombreMarca}')">
+                                onclick="prepararEliminacionMarcas(${marca.idMarca}, '${marca.nombreMarca}')">
                             <i class="bi bi-trash"></i>
                         </button>
                     </td>
@@ -183,7 +183,7 @@ window.guardarActualizacionMarca = function (event) {
 // ─────────────────────────────────────────────
 //  ELIMINAR
 // ─────────────────────────────────────────────
-window.prepararEliminacion = function (id, nombre) {
+window.prepararEliminacionMarcas = function (id, nombre) {
     idMarcaABorrar = id;
     const span = document.getElementById('nombreMarcaEliminar');
     if (span) span.innerText = nombre;

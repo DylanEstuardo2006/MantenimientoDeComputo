@@ -4,12 +4,6 @@ window.cargarVista = function (ruta) {
         .then(data => {
             document.getElementById("contenido-principal").innerHTML = data;
 
-            // --- LÓGICA DE USUARIOS ---
-            if (ruta.includes('crear-usuario.html') || ruta.includes('actualizar-usuario.html')) {
-                if (typeof inicializarModuloUsuarios === 'function') {
-                    inicializarModuloUsuarios();
-                }
-            }
             // --- LÓGICA DE MARCAS ---
             if (ruta.includes('marcas.html') || ruta.includes('crear-marca.html') || ruta.includes('actualizar-marcas.html')) {
                 if (typeof inicializarModuloMarcas === 'function') {
@@ -23,6 +17,20 @@ window.cargarVista = function (ruta) {
                     inicializarModuloModelos(ruta);
                 }
             }
+             
+            // --- LÓGICA DE USUARIOS ---
+            if(ruta.includes('usuarios.html') || ruta.include('crear-usuario.html') || ruta.includes('actualizar-usuario.html'))
+            {
+                if(typeof inicializarModuloMarcas === 'function')
+                {
+                    inicializarModuloUsuarios(ruta);
+                }
+            }
+
+            // ---- LÓGICA DE DISPOSITIVOS ---- 
+
+
+            
             // --- LÓGICA DE UI (Sidebar) ---
             if (window.innerWidth < 992) {
                 sidebar.classList.remove("show-sidebar");

@@ -8,21 +8,22 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Nombre del Modelo</label>
-                        <input type="text" id="nombreModelo" class="form-control" placeholder="Ej: Galaxy S24 Ultra" required>
+                        <input type="text" id="nombreModelo" class="form-control" placeholder="Ej: Galaxy S24 Ultra"
+                            required>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Marca</label>
                         <select id="selectMarca" class="form-select" required>
                             <option value="" selected disabled>Seleccione la marca correspondiente...</option>
-                            </select>
+                        </select>
                     </div>
                 </div>
                 <hr class="my-4">
-                <div class="d-flex justify-content-end gap-2">
-                    <button type="button" class="btn btn-light border" onclick="cargarVista('views/modelos.html')">Cancelar</button>
+                <div class="d-flex flex-column-reverse flex-sm-row justify-content-end gap-2">
+                    <button type="button" class="btn btn-light border"
+                        onclick="cargarVista('views/modelos.html')">Cancelar</button>
                     <button type="submit" class="btn btn-primary px-4">
-                       <i class="bi bi-plus-circle me-2"></i>
-                       Guardar Modelo
+                        <i class="bi bi-plus-circle me-2"></i> Guardar Modelo
                     </button>
                 </div>
             </form>
