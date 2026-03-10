@@ -19,7 +19,7 @@ window.cargarVista = function (ruta) {
             }
              
             // --- LÓGICA DE USUARIOS ---
-            if(ruta.includes('usuarios.html') || ruta.include('crear-usuario.html') || ruta.includes('actualizar-usuario.html'))
+            if(ruta.includes('usuarios.html') || ruta.includes('crear-usuario.html') || ruta.includes('actualizar-usuario.html'))
             {
                 if(typeof inicializarModuloMarcas === 'function')
                 {

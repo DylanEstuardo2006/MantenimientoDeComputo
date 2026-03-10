@@ -1,38 +1,57 @@
 <!---Encabezado del modulo -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h4 class="fw-bold">Gestión de Usuarios</h4>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold">Gestión de Usuarios</h4>
 
-                    <button class="btn btn-primary" onclick="cargarVista('views/crear-usuario.html')">
-                        <i class="bi bi-plus-lg me-2"></i> Nuevo Usuario
-                    </button>
-                </div>
-                <!---barra de búsqueda-->
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <input type="text" class="form-control" placeholder="Buscar usuario...">
-                    </div>
-                </div>
-                <!---Tabla de usuarios -->
-                <div class="card admin-card p-3">
-                    <div class="table-responsive">
-                        <table class="table align-middle table-hover">
+    <button class="btn btn-primary" onclick="cargarVista('views/crear-usuario.html')">
+        <i class="bi bi-plus-lg me-2"></i> Nuevo Usuario
+    </button>
+</div>
+<!---barra de búsqueda-->
+<div class="row mb-3">
+    <div class="col-md-4">
+        <input type="text" id="inputBuscarUsuario" class="form-control" placeholder="Buscar usuario...">
+    </div>
+</div>
+<!---Tabla de usuarios -->
+<div class="card admin-card p-3">
+    <div class="table-responsive">
+        <table class="table align-middle table-hover">
 
-                            <thead class="table-light">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Nombre</th>
-                                    <th>Apellido Paterno</th>
-                                    <th>Apellido Materno</th>
-                                    <th>Matrícula</th>
-                                    <th>Rol</th>
-                                    <th class="text-center">Acciones</th>
-                                </tr>
-                            </thead>
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Apellido Paterno</th>
+                    <th>Apellido Materno</th>
+                    <th>Matrícula</th>
+                    <th>Rol</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
 
-                            <tbody>
-                                
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                
+            <tbody id="tabla-usuarios">
+
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="modal fade" id="modalEliminarUsuarios" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-black text-white">
+                <h5 class="modal-title"><i class="bi bi-exclamation-triangle-fill me-2"></i>¿Confirmar eliminación?</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <p class="mb-1">Estás a punto de eliminar la marca:</p>
+                <h5 id="nombreUsuarioEliminar" class="fw-bold text-danger"></h5>
+                <p class="text-muted small">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" id="btnConfirmarBorrado" class="btn btn-danger px-4">Eliminar
+                    definitivamente</button>
+            </div>
+        </div>
+    </div>
+</div>

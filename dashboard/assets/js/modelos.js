@@ -267,7 +267,7 @@ window.prepararEliminacionModelos = function (id, nombre) {
     }
 
     const miModal = new bootstrap.Modal(
-        document.getElementById("modalEliminar")
+        document.getElementById("modalEliminarModelos")
     );
 
     miModal.show();
@@ -300,7 +300,7 @@ function confirmarBorradoModelosFinal() {
 
         // Cerramos el modal
         const modal = bootstrap.Modal.getInstance(
-            document.getElementById("modalEliminar")
+            document.getElementById("modalEliminarMarca")
         );
 
         if (modal) modal.hide();
