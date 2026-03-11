@@ -20,11 +20,11 @@ let idUsuarioABorrar = null;
 
 function obtenerHeaders() {
     //Aquí podriamos obtener un token si existiera
-    //const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
     return {
-        "Content-Type": "application/json"
-        // "Authorization": "Bearer " + token
+        "Content-Type": "application/json",
+        "Authorization": token ? `Bearer ${token}` : ""
     };
 }
 
@@ -41,7 +41,7 @@ function inicializarModuloUsuarios(ruta) {
     VISTA: LISTAR USUARIOS
     --------------------- */
 
-    if (ruta.includes("usuarios.html")) {
+    if (ruta.includes("usuario.html")) {
         listarUsuarios(); // cargar la tabla
 
         configurarBuscadorUsuarios(); // activa el buscador
@@ -82,7 +82,30 @@ function inicializarModuloUsuarios(ruta) {
         if (select) {
 
             // cargamos el select sin marca seleccionada
-            renderizarSelectMarcas("selectRoles");
+            renderizarSelectRoles("selectRoles");
+        }
+        const btnToggle = document.getElementById('btnTogglePassword');
+        const inputPass = document.getElementById('nuevoPassword');
+        const icono = document.getElementById('iconoOjito');
+
+        if (btnToggle && inputPass) {
+            btnToggle.addEventListener('click', function () {
+                // Cambiamos el tipo de input
+                const tipo = inputPass.getAttribute('type') === 'password' ? 'text' : 'password';
+                inputPass.setAttribute('type', tipo);
+
+                // Cambiamos el icono (ojo / ojo tachado)
+                icono.classList.toggle('bi-eye');
+                icono.classList.toggle('bi-eye-slash');
+            });
+        }
+        // --- AGREGAR ESTO ---
+        const btnGuardar = document.getElementById("btnGuardarUsuario");
+        if (btnGuardar) {
+            btnGuardar.onclick = function (e) {
+                e.preventDefault(); // Evita que la página se recargue
+                guardarNuevoUsuario();
+            };
         }
     }
 }
@@ -107,16 +130,18 @@ function renderizarSelectRoles(idSelect, idRolSeleccionado = null) {
             select.innerHTML =
                 '<option value="" selected disabled>Seleccione un Rol...</option>';
 
-            roles.forEach(roles => {
+            roles.forEach(rol => {
 
                 const option = document.createElement("option");
 
-                option.value = roles.idRol;
+                option.value = rol.idRol;
+
+                option.textContent = rol.rol || rol.rol;
 
                 //Si estamos en editar, marcamos la opción correcta 
                 if (
                     idRolSeleccionado !== null &&
-                    String(roles.idRol) === String(idRolSeleccionado)
+                    String(rol.idRol) === String(idRolSeleccionado)
                 ) {
                     option.selected = true;
                 }
@@ -148,7 +173,6 @@ function listarUsuarios() {
 
 
             data.forEach(usuarios => {
-       
 
                 html += `
                <tr>
@@ -157,7 +181,9 @@ function listarUsuarios() {
                    <td>${usuarios.apellidoPaterno}</td>
                    <td>${usuarios.apellidoMaterno}</td>
                    <td>${usuarios.matricula}</td>  
-                   <td><span class="badge bg-primary">${usuarios.idRol}</span></td>
+                   <td>${usuarios.telefono}</td> 
+
+                   <td><span class="badge bg-primary">${usuarios.rol}</span></td>
                    <td class="text-center">
 
                   <button class="btn btn-sm btn-outline-warning me-2" onclick="cargarVista('views/actualizar-usuario.html?idUsuario=${usuarios.idUsuario}')">
@@ -223,11 +249,11 @@ window.prepararEliminacionUsuarios = function (id, nombre) {
     const nombreElemento = document.getElementById("nombreUsuarioEliminar");
 
     if (nombreElemento) {
-         nombreElemento.innerHTML = nombre;
+        nombreElemento.innerHTML = nombre;
     }
-    
+
     const miModal = new bootstrap.miModal(
-         document.getElementById("modalEliminarUsuarios")
+        document.getElementById("modalEliminarUsuarios")
     );
 
     miModal.show()
@@ -248,34 +274,34 @@ function confirmarBorradoUsuarioFinal() {
         method: "DELETE",
         headers: obtenerHeaders()
     })
-    .then(res => {
+        .then(res => {
 
-        if (!res.ok) {
-            throw new Error("No se pudo eliminar el usuario");
-        }
+            if (!res.ok) {
+                throw new Error("No se pudo eliminar el usuario");
+            }
 
-        return res.json();
-    })
-    .then(() => {
+            return res.json();
+        })
+        .then(() => {
 
-        // Cerramos el modal
-        const modal = bootstrap.Modal.getInstance(
-            document.getElementById("modalEliminarMarca")
-        );
+            // Cerramos el modal
+            const modal = bootstrap.Modal.getInstance(
+                document.getElementById("modalEliminarMarca")
+            );
 
-        if (modal) modal.hide();
+            if (modal) modal.hide();
 
-        // Recargamos la lista
-        listarModelos();
+            // Recargamos la lista
+            listarModelos();
 
-        // Limpiamos el ID
-        idUsuarioABorrar = null;
+            // Limpiamos el ID
+            idUsuarioABorrar = null;
 
-    })
-    .catch(err => {
-        console.error("Error al eliminar:", err);
-        alert("Error al eliminar el usuario");
-    });
+        })
+        .catch(err => {
+            console.error("Error al eliminar:", err);
+            alert("Error al eliminar el usuario");
+        });
 
 }
 
@@ -284,26 +310,29 @@ function confirmarBorradoUsuarioFinal() {
    FUNCIÓN: CARGAR DATOS EN FORMULARIO (EDITAR)
 ====================================================== */
 
-function cargarDatosEnFormularioModelos(id) {
+function cargarDatosEnFormularioUsuarios(id) {
 
     fetch(`${urlApiUsuarios}/${id}`, { headers: obtenerHeaders() })
 
         .then(res => res.json())
 
-        .then(modelo => {
+        .then(usuarios => {
 
             const inputNombre = document.getElementById("editarNombreUsuario");
             const inputApellidoP = document.getElementById("editarApellidoPaterno");
+            const inputApellidoM = document.getElementById("editarApellidoMaterno");
+            const inputMatricula = document.getElementById("editarMatricula");
+            const inputTelefono = document.getElementById("editarTelefono");
 
-            
-            const displayId = document.getElementById("displayIdModelo");
 
-            if (input) input.value = modelo.nombreModelo;
-
-            if (displayId) displayId.innerText = modelo.idModelo;
+            if (inputNombre) inputNombre.value = usuarios.nombreUsuario;
+            if (inputApellidoP) inputApellidoP.value = usuarios.apellidoPaterno;
+            if (inputApellidoM) inputApellidoM.value = usuarios.apellidoMaterno;
+            if (inputMatricula) inputMatricula.value = usuarios.matricula;
+            if (inputTelefono) inputTelefono.value = usuarios.telefono;
 
             // cargamos el select con la marca ya seleccionada
-            renderizarSelectMarcas("selectMarca", modelo.idMarca);
+            renderizarSelectRoles("selectRoles", usuarios.idRol);
 
         })
 
@@ -313,4 +342,53 @@ function cargarDatosEnFormularioModelos(id) {
 
         });
 
+}
+
+/* ======================================================
+    FUNCIÓN: CREAR NUEVO USUARIO
+====================================================== */
+function guardarNuevoUsuario() {
+    // 1. Capturamos los valores de los inputs (asegúrate de que los IDs coincidan con tu HTML)
+    const nombre = document.getElementById("nuevoNombre")?.value;
+    const apellidoP = document.getElementById("nuevoApellidoP")?.value;
+    const apellidoM = document.getElementById("nuevoApellidoM")?.value;
+    const matricula = document.getElementById("nuevaMatricula")?.value;
+    const telefono = document.getElementById("nuevoTelefono")?.value;
+    const idRol = document.getElementById("selectRoles")?.value;
+    const password = document.getElementById("nuevoPassword")?.value;
+
+    // Validación simple
+    if (!nombre || !apellidoP || !apellidoM || !matricula || !idRol || !password || !telefono) {
+        alert("Por favor, completa los campos. Todos son obligatorios)");
+        return;
+    }
+
+    const nuevoUsuario = {
+        nombreUsuario: nombre,
+        apellidoPaterno: apellidoP,
+        apellidoMaterno: apellidoM,
+        matricula: matricula,
+        telefono: telefono,
+        idRol: parseInt(idRol),
+        contrasena: password // Tu API debería hashear esto al recibirlo
+    };
+
+    fetch(urlApiUsuarios, {
+        method: "POST",
+        headers: obtenerHeaders(),
+        body: JSON.stringify(nuevoUsuario)
+    })
+        .then(res => {
+            if (!res.ok) throw new Error("Error al crear el usuario");
+            return res.json();
+        })
+        .then(data => {
+            alert("¡Usuario creado con éxito!");
+            // Regresamos a la lista de usuarios
+            cargarVista('views/usuario.html');
+        })
+        .catch(err => {
+            console.error("Error:", err);
+            alert("No se pudo crear el usuario. Revisa la consola.");
+        });
 }

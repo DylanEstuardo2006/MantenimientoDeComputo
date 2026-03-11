@@ -27,11 +27,11 @@
             <!-- Lado derecho -->
             <div class="admin-user d-flex align-items-center gap-2">
                 <div class="user-info text-end d-none d-sm-block">
-                    <div class="fw-semibold">Dylan</div>
-                    <small class="text-muted">Administrador</small>
+                    <div class="fw-semibold" id="nombre-usuario-header">Cargando...</div>
+                    <small class="text-muted" id="rol-usuario-header">Rol</small>
                 </div>
                 <div class="divider d-none d-sm-block"></div>
-                <button class="btn btn-outline-primary btn-sm">
+                <button class="btn btn-outline-primary btn-sm" id="btn-logout">
                     <span class="d-none d-sm-inline">Cerrar sesión</span>
                     <i class="bi bi-box-arrow-right d-sm-none"></i>
                 </button>
@@ -45,20 +45,20 @@
             <aside class="col-md-3 col-lg-2 admin-sidebar p-3" id="sidebar">
                 <h6 class="sidebar-title">MENÚ</h6>
                 <ul class="nav flex-column gap-2">
-                    <a class="nav-link" href="#" onclick="cargarVista('views/usuarios.html')">
+                    <a class="nav-link" href="#" id="btn-menu-usuarios" onclick="cargarVista('views/usuarios.html')">
                         <i class="bi bi-people-fill me-2"></i> Usuarios
                     </a>
 
-                    <a class="nav-link" href="#" onclick="cargarVista('views/marcas.html')">
+                    <a class="nav-link" href="#" id="btn-menu-marcas" onclick="cargarVista('views/marcas.html')">
                         <i class="bi bi-tag-fill me-2"></i> Marcas
                     </a>
-                    <a class="nav-link" href="#" onclick="cargarVista('views/modelos.html')">
+                    <a class="nav-link" href="#" id="btn-menu-modelos" onclick="cargarVista('views/modelos.html')">
                         <i class="bi bi-wallet-fill me-2"></i> Modelos
                     </a>
-                    <a class="nav-link" href="#" onclick="cargarVista('views/equipos.html')">
+                    <a class="nav-link" href="#" id="btn-menu-equipos" onclick="cargarVista('views/equipos.html')">
                         <i class="bi bi-pc-display me-2"></i> Equipos
                     </a>
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="#" id="btn-menu-ordenes">
                         <i class="bi bi-clipboard-data me-2"></i> Órdenes de Trabajo
                     </a>
                 </ul>
@@ -67,59 +67,7 @@
 
             <!-- CONTENIDO -->
             <main id="contenido-principal" class="col-md-9 col-lg-10 p-4">
-                <div class="container py-4">
-                    <header class="pb-3 mb-4 border-bottom">
-                        <div class="d-flex align-items-center p-3">
-                            <!-- Logo (reemplazar src con la ruta de tu logo) -->
-                            <img src="img/logoEmpresa.png" alt="Logo" class="img-fluid me-3" style="width: 80px;">
 
-                            <!-- Texto -->
-                            <div>
-                                <h1 class="h3 mb-0 fw-bold">Mantenimiento de Equipos de Computo</h1>
-                                <p class="text-muted mb-0">Administración de Registros de mantenimiento de Equipos de
-                                    Computo</p>
-                            </div>
-                        </div>
-
-
-                    </header>
-                    <div class="p-5 mb-4 bg-body-tertiary rounded-3">
-                        <div class="container-fluid py-5">
-                            <h1 class="display-5 fw-semibold">Sistema de Mantenimiento de Equipos</h1>
-                            <p class="col-md-8 fs-4">
-                                Bienvenido al panel principal del sistema. Desde este apartado podrás gestionar
-                                dispositivos, órdenes de trabajo y dar seguimiento a los mantenimientos
-                                realizados a los equipos de cómputo dentro de la institución.
-                            </p>
-                            <button class="btn btn-primary btn-lg" type="button">Ver órdenes de trabajo</button>
-                        </div>
-                    </div>
-                    <div class="row align-items-md-stretch">
-                        <div class="col-md-6">
-                            <div class="h-100 p-5 text-bg-dark rounded-3">
-                                <h2>Gestión de Dispositivos</h2>
-                                <p>
-                                    Administra los equipos registrados en el sistema. Puedes consultar información
-                                    como modelo, marca, tipo de dispositivo y el laboratorio al que pertenece cada
-                                    equipo.
-                                    Esto permite mantener un control organizado del inventario tecnológico.
-                                </p>
-                                <button class="btn btn-outline-light" type="button">Administrar dispositivos</button>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="h-100 p-5 bg-body-tertiary border rounded-3">
-                                <h2>Órdenes de Mantenimiento</h2>
-                                <p>
-                                    Crea y da seguimiento a las órdenes de trabajo para el mantenimiento de equipos.
-                                    Podrás registrar los dispositivos involucrados, el tipo de mantenimiento,
-                                    los insumos utilizados y el estado de cada intervención realizada.
-                                </p>
-                                <button class="btn btn-outline-secondary" type="button">Gestionar órdenes</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </main>
 
         </div>

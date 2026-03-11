@@ -1,32 +1,37 @@
-// URL de la API de Roles de Usuario
 const urlApi = 'https://pratica-5b-node-s1hu.vercel.app/api/';
 
-function cargarRoles(){
-    fetch(urlApi + "roles")
-    .then(res => res.json())
-    .then(data => {
-        const select = document.getElementById("selectRoles");
+async function ejecutarLogin(event) {
+    event.preventDefault();
 
-        data.forEach(rol => {
-            select.innerHTML += `
-                <option value="${rol.idRol}">
-                    ${rol.rol}
-                </option>
-            `;
+    const matriculaInput = document.getElementById("matricula").value.trim();
+    const passwordInput = document.getElementById("password").value;
+
+    const datosUsuario = {
+        matricula: matriculaInput,
+        contrasena: passwordInput
+    };
+
+    try {
+        const response = await fetch(`${urlApi}auth/login`, { // Usamos la variable urlApi
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(datosUsuario)
         });
-    });
-}
 
-document.addEventListener('DOMContentLoaded',() =>
-{
-  cargarRoles();
-});
+        const data = await response.json();
 
-function cargarUsuarios()
-{
-    fetch(urlApi + "usuarios")
-    .then(res => res.json())
-    .then(data => {
-        
-    })
+        if (response.ok) {
+            // Guardamos token y datos del usuario (id y rol)
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("userSession", JSON.stringify(data.usuario));
+
+            console.log("Login exitoso, redirigiendo...");
+            window.location.href = "dashboard/dashboard.html"; 
+        } else {
+            alert(data.message || "Credenciales inválidas");
+        }
+    } catch (error) {
+        console.error("Error de red:", error);
+        alert("Error de conexión con el servidor.");
+    }
 }

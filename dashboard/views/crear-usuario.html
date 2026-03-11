@@ -15,17 +15,17 @@
                 <div class="row g-3">
                     <div class="col-md-4">
                         <label class="form-label small fw-semibold">Nombre(s)</label>
-                        <input type="text" class="form-control form-control-lg fs-6" id="nombre" placeholder="Ej: Juan"
-                            required>
+                        <input type="text" class="form-control form-control-lg fs-6" id="nuevoNombre"
+                            placeholder="Ej: Juan" required>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label small fw-semibold">Apellido Paterno</label>
-                        <input type="text" class="form-control form-control-lg fs-6" id="apellidoPaterno"
+                        <input type="text" class="form-control form-control-lg fs-6" id="nuevoApellidoP"
                             placeholder="Pérez" required>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label small fw-semibold">Apellido Materno</label>
-                        <input type="text" class="form-control form-control-lg fs-6" id="apellidoMaterno"
+                        <input type="text" class="form-control form-control-lg fs-6" id="nuevoApellidoM"
                             placeholder="García" required>
                     </div>
                 </div>
@@ -42,7 +42,7 @@
                         <label class="form-label small fw-semibold">Matrícula / ID</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light"><i class="bi bi-card-text"></i></span>
-                            <input type="text" class="form-control form-control-lg fs-6" id="matricula"
+                            <input type="text" class="form-control form-control-lg fs-6" id="nuevaMatricula"
                                 placeholder="20230001" required>
                         </div>
                     </div>
@@ -50,7 +50,7 @@
                         <label class="form-label small fw-semibold">Teléfono</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light"><i class="bi bi-telephone"></i></span>
-                            <input type="text" class="form-control form-control-lg fs-6" id="telefono"
+                            <input type="text" class="form-control form-control-lg fs-6" id="nuevoTelefono"
                                 placeholder="55 1234 5678" required>
                         </div>
                     </div>
@@ -58,8 +58,13 @@
                         <label class="form-label small fw-semibold">Contraseña</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light"><i class="bi bi-key"></i></span>
-                            <input type="password" class="form-control form-control-lg fs-6" id="password"
+
+                            <input type="password" class="form-control form-control-lg fs-6" id="nuevoPassword"
                                 placeholder="••••••••" required>
+
+                            <button class="btn btn-outline-secondary" type="button" id="btnTogglePassword">
+                                <i class="bi bi-eye" id="iconoOjito"></i>
+                            </button>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -74,11 +79,11 @@
             <div class="mt-5 d-flex flex-column-reverse flex-sm-row justify-content-sm-between gap-3">
 
                 <button type="button" class="btn btn-light text-secondary fw-semibold px-4 border py-2 py-sm-3"
-                    onclick="cargarVista('views/usuarios.html')">
+                    onclick="cargarVista('views/usuario.html')">
                     <i class="bi bi-arrow-left me-2"></i>Regresar
                 </button>
 
-                <button type="submit" class="btn btn-primary px-5 shadow-sm fw-bold py-2 py-sm-3">
+                <button type="submit" id="btnGuardarUsuario" class="btn btn-primary px-5 shadow-sm fw-bold py-2 py-sm-3">
                     <i class="bi bi-check-circle me-2"></i>Guardar Usuario
                 </button>
 

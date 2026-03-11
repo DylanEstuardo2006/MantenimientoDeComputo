@@ -11,7 +11,7 @@
 
                 <div class="col-md-4 mb-3">
                     <label class="form-label small text-muted">Nombre</label>
-                    <input type="text" class="form-control bg-light" id="editarNombreUsuario" placeholder="Nombre" required>
+                    <input type="text" class="form-control bg-light" id="editarNombreUsuario" required>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label class="form-label small text-muted">Apellido Paterno</label>
@@ -19,7 +19,7 @@
                 </div>
                 <div class="col-md-4 mb-3">
                     <label class="form-label small text-muted">Apellido Materno</label>
-                    <input type="text" class="form-control bg-light" id="apellidoMaterno" required>
+                    <input type="text" class="form-control bg-light" id="editarApellidoMaterno" required>
                 </div>
 
                 <div class="col-12 border-bottom mt-4 mb-2">
@@ -28,12 +28,12 @@
 
                 <div class="col-md-6 mb-3">
                     <label class="form-label small text-muted">Matrícula (No editable)</label>
-                    <input type="text" class="form-control-plaintext border-bottom ps-2" id="matricula" readonly>
+                    <input type="text" class="form-control-plaintext border-bottom ps-2" id="editarMatricula" readonly>
                 </div>
 
                 <div class="col-md-6 mb-3">
                     <label class="form-label small text-muted">Teléfono de Contacto</label>
-                    <input type="text" class="form-control" id="telefono" required>
+                    <input type="text" class="form-control" id="editarTelefono" required>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -51,7 +51,7 @@
             <hr class="my-4">
 
             <div class="d-flex justify-content-end gap-2">
-                <button type="button" class="btn btn-outline-secondary px-4" onclick="cargarVista('views/usuarios.html')">
+                <button type="button" class="btn btn-outline-secondary px-4" onclick="cargarVista('views/usuario.html')">
                     Cancelar
                 </button>
                 <button type="submit" class="btn btn-warning px-4 fw-bold">
