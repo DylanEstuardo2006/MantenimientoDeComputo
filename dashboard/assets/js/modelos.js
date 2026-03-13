@@ -51,6 +51,8 @@ function inicializarModuloModelos(ruta) {
             btnBorrar.onclick = confirmarBorradoModelosFinal;
         }
     }
+     
+
 
     /* -------------------------
        VISTA: EDITAR MODELO
@@ -67,6 +69,16 @@ function inicializarModuloModelos(ruta) {
 
             // cargamos los datos en el formulario
             cargarDatosEnFormularioModelos(idModeloAEditar);
+
+            const btnActualizar = document.getElementById("btnActualizarModelos");
+
+            if(btnActualizar){
+                btnActualizar.onclick = function (e){
+                  e.preventDefault();
+                  actualizarModelo(idModeloAEditar);
+                }
+            }
+            
         }
     }
 
@@ -82,6 +94,8 @@ function inicializarModuloModelos(ruta) {
 
             // cargamos el select sin marca seleccionada
             renderizarSelectMarcas("selectMarca");
+            configurarFormularioCrearModelos();
+            
         }
     }
 }
@@ -300,7 +314,7 @@ function confirmarBorradoModelosFinal() {
 
             // Cerramos el modal
             const modal = bootstrap.Modal.getInstance(
-                document.getElementById("modalEliminarMarca")
+                document.getElementById("modalEliminarModelos")
             );
 
             if (modal) modal.hide();
