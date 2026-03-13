@@ -16,12 +16,10 @@ let idModeloABorrar = null;
 // ==========================================
 function obtenerHeaders() {
 
-    // Aquí podríamos obtener un token si existiera
-    // const token = localStorage.getItem("token");
-
+    const token = localStorage.getItem("token");
     return {
-        "Content-Type": "application/json"
-        // "Authorization": "Bearer " + token
+        "Content-Type": "application/json",
+        "Authorization": token ? `Bearer ${token}` : ""
     };
 }
 
@@ -173,6 +171,8 @@ function listarModelos() {
 
                     <td>${modelo.idMarca}</td>
 
+                    <td>${modelo.nombreMarca}</td>
+
                     <td class="text-center">
 
                         <!-- BOTÓN EDITAR -->
@@ -288,34 +288,34 @@ function confirmarBorradoModelosFinal() {
         method: "DELETE",
         headers: obtenerHeaders()
     })
-    .then(res => {
+        .then(res => {
 
-        if (!res.ok) {
-            throw new Error("No se pudo eliminar el modelo");
-        }
+            if (!res.ok) {
+                throw new Error("No se pudo eliminar el modelo");
+            }
 
-        return res.json();
-    })
-    .then(() => {
+            return res.json();
+        })
+        .then(() => {
 
-        // Cerramos el modal
-        const modal = bootstrap.Modal.getInstance(
-            document.getElementById("modalEliminarMarca")
-        );
+            // Cerramos el modal
+            const modal = bootstrap.Modal.getInstance(
+                document.getElementById("modalEliminarMarca")
+            );
 
-        if (modal) modal.hide();
+            if (modal) modal.hide();
 
-        // Recargamos la lista
-        listarModelos();
+            // Recargamos la lista
+            listarModelos();
 
-        // Limpiamos el ID
-        idModeloABorrar = null;
+            // Limpiamos el ID
+            idModeloABorrar = null;
 
-    })
-    .catch(err => {
-        console.error("Error al eliminar:", err);
-        alert("Error al eliminar el modelo");
-    });
+        })
+        .catch(err => {
+            console.error("Error al eliminar:", err);
+            alert("Error al eliminar el modelo");
+        });
 
 }
 

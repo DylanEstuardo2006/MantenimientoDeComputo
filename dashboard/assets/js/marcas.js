@@ -8,6 +8,15 @@ const urlMarcas = 'https://pratica-5b-node-s1hu.vercel.app/api/marcas';
 let idMarcaABorrar = null;
 let idMarcaAEditar = null;
 
+function obtenerHeaders() {
+
+    const token = localStorage.getItem("token");
+
+    return {
+        "Content-Type": "application/json",
+        "Authorization": token ? `Bearer ${token}` : ""
+    };
+}
 
 // ─────────────────────────────────────────────
 //  INICIALIZADOR  (llamado desde el router)
@@ -16,8 +25,11 @@ function inicializarModuloMarcas(ruta) {
     console.log("Módulo de Marcas activado:", ruta);
 
     if (ruta.includes('actualizar-marcas.html')) {
+        
         const query = ruta.includes('?') ? ruta.split('?')[1] : '';
+       
         const params = new URLSearchParams(query);
+        
         idMarcaAEditar = params.get('idMarca');
 
         if (idMarcaAEditar) {
@@ -27,14 +39,12 @@ function inicializarModuloMarcas(ruta) {
             console.warn("No se recibió idMarca en la URL.");
         }
 
-    } else if (ruta.includes('crear-marca.html')) {
-        const form = document.getElementById('formCrearMarca');
-        if (form) form.addEventListener('submit', guardarNuevaMarca);
-
+    } else if (ruta.includes('crear-marcas.html')) {
+        configurarFormularioCrearMarca();
     } else if (ruta.includes('marcas.html')) {
         listarMarcas();
         const btnBorrar = document.getElementById('btnConfirmarBorrado');
-        if (btnBorrar) btnBorrar.onclick = confirmarBorradoFinal;
+        if (btnBorrar) btnBorrar.onclick = confirmarBorradoMarcaFinal;
     }
 }
 
@@ -62,7 +72,7 @@ function listarMarcas() {
                             <i class="bi bi-pencil"></i>
                         </button>
                         <button class="btn btn-sm btn-outline-danger"
-                                onclick="prepararEliminacionMarcas(${marca.idMarca}, '${marca.nombreMarca}')">
+                                onclick="prepararEliminacionMarcas(${marca.idMarca},'${marca.nombreMarca}')">
                             <i class="bi bi-trash"></i>
                         </button>
                     </td>
@@ -99,35 +109,59 @@ function configurarBuscadorMarcas() {
     });
 }
 
+/* =======================================
+  CONFIGURAR NUEVO USUARIO 
+========================================= */
+
+function configurarFormularioCrearMarca()
+{
+    const form = document.getElementById("formCrearMarca");
+
+    if(form){
+        form.addEventListener("submit", function(e){
+            e.preventDefault();
+            guardarNuevaMarca();
+        });
+    }
+}
 
 // ─────────────────────────────────────────────
 //  CREAR
 // ─────────────────────────────────────────────
-window.guardarNuevaMarca = function (event) {
-    event.preventDefault();
+guardarNuevaMarca = function () {
 
-    const nombreMarca = document.getElementById('nombreMarca')?.value.trim();
+    const nombreMarca = document.getElementById('nombreMarca').value.trim();
+    
     if (!nombreMarca) {
         alert("El nombre no puede estar vacío.");
         return;
     }
+    
+    const nuevaMarca = {
+        nombreMarca: nombreMarca
+    }
 
     fetch(urlMarcas, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombreMarca })
+        method: "POST",
+        headers: obtenerHeaders(),
+        body: JSON.stringify(nuevaMarca)
     })
         .then(res => {
-            if (res.ok) {
-                console.log("Marca creada con éxito.");
-                cargarVista('views/marcas.html');
-            } else {
-                alert("Error al crear la marca en el servidor.");
+            
+            if (!res.ok) {
+                throw new Error("Error al crear la marca");
             }
+
+            return res.json();
+        })
+        .then(() => {
+             alert("Marca creado correctamente");
+
+            cargarVista("views/marcas.html");
         })
         .catch(err => {
             console.error("Error en la petición POST:", err);
-            alert("No se pudo conectar con el servidor.");
+            alert("No se pudo crear la marca");
         });
 };
 
@@ -135,14 +169,14 @@ window.guardarNuevaMarca = function (event) {
 // ─────────────────────────────────────────────
 //  CARGAR DATOS EN FORMULARIO (edición)
 // ─────────────────────────────────────────────
-window.cargarDatosMarcaEnFormulario = function(id) {
-    console.log(">>> entrando a cargarDatosEnFormulario, id:", id);
-    fetch(`${urlMarcas}/${id}`)
+cargarDatosMarcaEnFormulario = function (idMarca) {
+   
+    fetch(`${urlMarcas}/${idMarca}`, {headers: obtenerHeaders()})
         .then(res => res.json())
         .then(marca => {
-            console.log(">>> marca recibida:", marca);
-            const input = document.getElementById('nombreMarca');
-            console.log(">>> input:", input);
+            
+            const input = document.getElementById('editarNombreMarca');
+
             if (input) input.value = marca.nombreMarca ?? '';
         })
         .catch(err => console.error(">>> Error:", err));
@@ -154,28 +188,42 @@ window.cargarDatosMarcaEnFormulario = function(id) {
 window.guardarActualizacionMarca = function (event) {
     event.preventDefault();
 
-    const nombreMarca = document.getElementById('nombreMarca')?.value.trim();
+
+    const nombreMarca = document.getElementById('editarNombreMarca')?.value.trim();
+    
     if (!nombreMarca) {
         alert("El nombre no puede estar vacío.");
         return;
     }
 
+    const marcaActualizada = {
+      nombreMarca: nombreMarca
+    }
+
     fetch(`${urlMarcas}/${idMarcaAEditar}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombreMarca })
+        headers: obtenerHeaders(),
+        body: JSON.stringify(marcaActualizada)
     })
         .then(res => {
-            if (res.ok) {
-                console.log("Marca actualizada con éxito.");
-                cargarVista('views/marcas.html');
-            } else {
-                alert("Error al actualizar en el servidor.");
+            if (!res.ok) {
+                throw new Error("No se pudo actualizar la marca");
             }
+
+            return res.json();
+        })
+         .then(() => {
+
+            alert("Marca actualizada correctamente");
+
+            cargarVista("views/marcas.html");
+
         })
         .catch(err => {
-            console.error("Error en la petición PUT:", err);
-            alert("No se pudo conectar con el servidor.");
+            
+            console.error("Error:", err);
+
+             alert("Error al actualizar usuario");
         });
 };
 
@@ -184,28 +232,55 @@ window.guardarActualizacionMarca = function (event) {
 //  ELIMINAR
 // ─────────────────────────────────────────────
 window.prepararEliminacionMarcas = function (id, nombre) {
+   
     idMarcaABorrar = id;
+
     const span = document.getElementById('nombreMarcaEliminar');
     if (span) span.innerText = nombre;
 
-    const miModal = new bootstrap.Modal(document.getElementById('modalEliminar'));
+    const modalElement = document.getElementById('modalEliminarMarcas');
+
+    if (!modalElement) {
+        console.error("No se encontró el modalEliminarMarcas en el DOM");
+        return;
+    }
+
+    const miModal = new bootstrap.Modal(modalElement);
     miModal.show();
 };
 
-window.confirmarBorradoFinal = function () {
+/* ======================================
+CONFIRMAR BORRADO 
+========================================= */
+
+function confirmarBorradoMarcaFinal () {
     if (!idMarcaABorrar) return;
 
-    fetch(`${urlMarcas}/${idMarcaABorrar}`, { method: 'DELETE' })
+    fetch(`${urlMarcas}/${idMarcaABorrar}`, 
+        { method: 'DELETE' , 
+          headers: obtenerHeaders () })
+          
         .then(res => {
-            if (res.ok) {
-                const modal = bootstrap.Modal.getInstance(document.getElementById('modalEliminar'));
-                modal?.hide();
-                idMarcaABorrar = null;
-                listarMarcas();
-            } else {
-                alert("Error al eliminar la marca.");
+             if (!res.ok) {
+                throw new Error("No se pudo eliminar la marca");
             }
+
+            return res.json();
         })
+        .then(() => {
+
+            const modal = bootstrap.Modal.getInstance(
+                document.getElementById("modalEliminarMarcas")
+            );
+
+            if (modal) modal.hide();
+
+            listarMarcas();
+
+            idMarcaABorrar = null;
+
+        })
+
         .catch(err => {
             console.error("Error en la petición DELETE:", err);
             alert("No se pudo conectar con el servidor.");

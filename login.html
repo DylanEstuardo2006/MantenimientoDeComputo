@@ -33,7 +33,7 @@
         <div class="collapse navbar-collapse" id="navbarPublic">
 
           <!-- Navegación -->
-          <ul class="navbar-nav ms-auto me-3 mb-2 mb-lg-0">          
+          <ul class="navbar-nav ms-auto me-3 mb-2 mb-lg-0">
             <li class="nav-item">
               <a class="nav-link active-link" href="index.html">Inicio</a>
             </li>
@@ -43,7 +43,7 @@
             <li class="nav-item">
               <a class="nav-link" href="contactos.html">Contacto</a>
             </li>
-             <li class="nav-item">
+            <li class="nav-item">
               <a class="nav-link active-link" href="mapaDeSitio.html">Mapa de Sitio</a>
             </li>
           </ul>
@@ -88,15 +88,20 @@
             <form>
               <div class="mb-3">
                 <label class="form-label">Usuario</label>
-                <input type="text" id="matricula" placeholder="Tu matrícula"  class="form-control" required>
+                <input type="text" id="matricula" placeholder="Tu matrícula" class="form-control" required>
               </div>
-
               <div class="mb-3">
-                <label class="form-label">Contraseña</label>
-                <input id="password"  type="password" placeholder="Tu contraseña" class="form-control" required>
+                <label class="form-label small fw-semibold">Contraseña</label>
+                <div class="input-group">
+  
+                  <input type="password" class="form-control" id="password"
+                    placeholder="••••••••" required>
+
+                  <button class="btn btn-outline-secondary" type="button" id="btnTogglePassword">
+                    <i class="bi bi-eye" id="iconoOjito"></i>
+                  </button>
+                </div>
               </div>
-
-
               <button onclick="ejecutarLogin(event)" class="btn btn-primary w-100 fw-bold">
                 Ingresar
               </button>
@@ -105,7 +110,7 @@
         </div>
 
       </div>
-    </div>  
+    </div>
   </main>
   <footer class="bg-dark text-white text-center py-3 mt-auto">
     <div class="container">
@@ -116,6 +121,7 @@
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
     crossorigin="anonymous"></script>
   <script src="js/login.js"></script>
+  <script src="js/utils.js"></script>
 </body>
 
 </html>

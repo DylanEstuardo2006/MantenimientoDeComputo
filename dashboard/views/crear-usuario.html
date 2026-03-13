@@ -42,9 +42,11 @@
                         <label class="form-label small fw-semibold">Matrícula / ID</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light"><i class="bi bi-card-text"></i></span>
-                            <input type="text" class="form-control form-control-lg fs-6" id="nuevaMatricula"
-                                placeholder="20230001" required>
+                            <input type="text" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                                class="form-control form-control-lg fs-6" id="nuevaMatricula" placeholder="20230001"
+                                maxlength="8" required>
                         </div>
+                        <div class="small text-muted">Debe ser de exactamente 8 números.</div>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label small fw-semibold">Teléfono</label>
@@ -83,7 +85,8 @@
                     <i class="bi bi-arrow-left me-2"></i>Regresar
                 </button>
 
-                <button type="submit" id="btnGuardarUsuario" class="btn btn-primary px-5 shadow-sm fw-bold py-2 py-sm-3">
+                <button type="submit" id="btnGuardarUsuario"
+                    class="btn btn-primary px-5 shadow-sm fw-bold py-2 py-sm-3">
                     <i class="bi bi-check-circle me-2"></i>Guardar Usuario
                 </button>
 
@@ -91,5 +94,3 @@
         </form>
     </div>
 </div>
-
-<script>renderizarSelectRoles('selectRoles');</script>

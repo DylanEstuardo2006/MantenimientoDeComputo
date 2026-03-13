@@ -3,7 +3,6 @@
    Se ejecuta antes de cualquier otra cosa para evitar accesos no autorizados.
    ========================================================================== */
 if (!localStorage.getItem("token")) {
-    console.log("No hay token, redirigiendo...");
     window.location.replace("../login.html"); // .replace es mejor para que no puedan volver atrás
 }
 
@@ -30,17 +29,22 @@ function inicializarDashboard() {
 
     const displayNombre = document.getElementById("nombre-usuario-header")
     if (displayNombre) {
-        displayNombre.textContent = `Matrícula: ${usuarioGlobal.matricula}`;
+        const token = localStorage.getItem("token");
+
+        const payload = JSON.parse(atob(token.split(".")[1]));
+
+        document.getElementById("nombre-usuario-header").textContent =
+            `Matrícula: ${payload.matricula}`;
     }
 
-   // AJUSTE: Usamos .rol en lugar de .idRol porque así viene del servidor
+    // AJUSTE: Usamos .rol en lugar de .idRol porque así viene del servidor
     const rolTexto = usuarioGlobal.rol === 1 ? "Administrador" : "Técnico";
     const displayRol = document.getElementById("rol-usuario-header");
     if (displayRol) {
         displayRol.textContent = rolTexto;
     }
 
-   // --- LÓGICA POR ROLES ---
+    // --- LÓGICA POR ROLES ---
     if (usuarioGlobal.rol === 1) {
         cargarVista('views/administrador.html');
     } else {
@@ -67,7 +71,7 @@ window.cargarVista = function (ruta) {
     const usuario = JSON.parse(localStorage.getItem("userSession"));
 
     // Si es técnico (Rol 2) e intenta cargar algo de usuarios, lo bloqueamos
-    if (usuario.rol === 2 && ruta.includes('usuario')) {
+    if (usuario.rol === 2 && ruta.includes('usuario') || usuario.rol === 2 && ruta.includes('ordenes')) {
         console.warn("Acceso denegado a usuarios para este rol.");
         cargarVista('views/tecnico.html'); // Lo regresamos a su casita
         return; // Detenemos el fetch
@@ -76,7 +80,7 @@ window.cargarVista = function (ruta) {
 
     fetch(ruta)
         .then(response => response.text())
-        .then(data => {
+        .then(data => {  
             // Inyectamos el HTML en el contenedor central
             document.getElementById("contenido-principal").innerHTML = data;
 
@@ -86,7 +90,7 @@ window.cargarVista = function (ruta) {
                --------------------------------------------------------- */
 
             // Lógica de MARCAS
-            if (ruta.includes('marcas.html') || ruta.includes('crear-marca.html') || ruta.includes('actualizar-marcas.html')) {
+            if (ruta.includes('marcas.html') || ruta.includes('crear-marcas.html') || ruta.includes('actualizar-marcas.html')) {
                 if (typeof inicializarModuloMarcas === 'function') {
                     inicializarModuloMarcas(ruta);
                 }
@@ -104,6 +108,13 @@ window.cargarVista = function (ruta) {
                 if (typeof inicializarModuloUsuarios === 'function') {
                     inicializarModuloUsuarios(ruta);
                 }
+            }
+            if(ruta.includes('dispositivo.html' || ruta.includes('crear-dispositivo.html')) || ruta.includes('actualizar-dispositivo'))
+            {
+               if(typeof inicializarModuloDispositivos === 'function')
+               {
+                   inicializarModuloDispositivos(ruta);
+               }
             }
 
             // --- GESTIÓN DE UI (Cerrar sidebar en móviles tras click) ---
