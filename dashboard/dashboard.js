@@ -1,16 +1,19 @@
-/* ==========================================================================
-   SEGURIDAD: VERIFICACIÓN DE ACCESO
-   Se ejecuta antes de cualquier otra cosa para evitar accesos no autorizados.
+/**  ==========================================================================
+  * ? SEGURIDAD: VERIFICACIÓN DE ACCESO
+  * ? Se ejecuta antes de cualquier otra cosa para evitar accesos no autorizados.
    ========================================================================== */
 if (!localStorage.getItem("token")) {
     window.location.replace("../login.html"); // .replace es mejor para que no puedan volver atrás
 }
 
-/**
- * inicializarDashboard
- * Configura la vista inicial y los permisos de la interfaz según el rol del usuario.
+/** 
+ * * inicializarDashboard
+ * * Configura la vista inicial y los permisos de la interfaz según el rol del usuario.
  */
-// 1. Declaramos el usuario a nivel global para que todos los módulos lo vean
+/** 
+ * TODO: 1. Declaramos el usuario a nivel global para que todos los módulos lo vean
+*/
+
 let usuarioGlobal = null;
 
 function inicializarDashboard() {
@@ -23,10 +26,12 @@ function inicializarDashboard() {
     }
 
     usuarioGlobal = JSON.parse(sesion);
-    // --- NUEVO: INSERTAR DATOS EN EL HEADER ---
 
-    // USAMOS MATRICULA Por que el objeto no trae nombreUsuario 
-
+    /**
+     * TODO --- NUEVO: INSERTAR DATOS EN EL HEADER ---
+     * 
+     * TODO  USAMOS MATRICULA Por que el objeto no trae nombreUsuario 
+    */
     const displayNombre = document.getElementById("nombre-usuario-header")
     if (displayNombre) {
         const token = localStorage.getItem("token");
@@ -109,7 +114,7 @@ window.cargarVista = function (ruta) {
                     inicializarModuloUsuarios(ruta);
                 }
             }
-            if(ruta.includes('dispositivo.html' || ruta.includes('crear-dispositivo.html')) || ruta.includes('actualizar-dispositivo'))
+            if(ruta.includes('dispositivos.html' || ruta.includes('crear-dispositivos.html')) || ruta.includes('actualizar-dispositivos.html'))
             {
                if(typeof inicializarModuloDispositivos === 'function')
                {

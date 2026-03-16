@@ -7,9 +7,9 @@ const urlApiRoles = "https://pratica-5b-node-s1hu.vercel.app/api/roles";
 
 let idUsuarioABorrar = null;
 
-/* ======================================================
-   HEADERS CON TOKEN
-====================================================== */
+/** ======================================================
+  * TODO: HEADERS CON TOKEN
+============================================= */
 
 function obtenerHeaders() {
 
@@ -21,8 +21,8 @@ function obtenerHeaders() {
     };
 }
 
-/* ======================================================
-   FUNCIÓN PRINCIPAL DEL MÓDULO
+/**  ======================================================
+  * TODO: FUNCIÓN PRINCIPAL DEL MÓDULO
 ====================================================== */
 
 function inicializarModuloUsuarios(ruta) {
@@ -30,7 +30,7 @@ function inicializarModuloUsuarios(ruta) {
     const rutaLimpia = ruta.toLowerCase();
 
     /* ==============================
-       LISTAR USUARIOS
+     * LISTAR USUARIOS
     ============================== */
 
     if (rutaLimpia.includes("usuario.html")) {
@@ -45,8 +45,8 @@ function inicializarModuloUsuarios(ruta) {
         }
     }
 
-    /* ==============================
-       CREAR USUARIO
+    /** ==============================
+     * TODO:  CREAR USUARIO
     ============================== */
 
     if (rutaLimpia.includes("crear-usuario.html")) {
@@ -77,8 +77,7 @@ function inicializarModuloUsuarios(ruta) {
                     e.preventDefault();
                     actualizarUsuario(idUsuario);
 
-                };
-
+                }
             }
         }
     }
@@ -184,8 +183,8 @@ function listarUsuarios() {
 
 }
 
-/* ======================================================
-   BUSCADOR
+/** ======================================================
+* TODO:  BUSCADOR
 ====================================================== */
 
 function configurarBuscadorUsuarios() {
@@ -318,15 +317,45 @@ function cargarDatosUsuario(id) {
     FUNCIÓN ACTUALIZAR EL USUARIO 
     ======================================== */
 function actualizarUsuario(idUsuario) {
+    
+    const nombreUsuario = document.getElementById("editarNombreUsuario").value.trim();
+    const apellidoPaterno = document.getElementById("editarApellidoPaterno").value.trim();
+    const apellidoMaterno = document.getElementById("editarApellidoMaterno").value.trim();
+    const idRol = parseInt(document.getElementById("selectRoles").value)
+    const matricula = document.getElementById("editarMatricula").value;
+    const telefono = document.getElementById("editarTelefono").value.trim();
+
+    const soloNumeros = /^\d+$/.exec(matricula);
+
+    if (!soloNumeros) {
+        alert("❌ La matrícula solo debe contener números.");
+        return; // Detiene la ejecución
+    }
+
+    // 2. Validamos que sean exactamente 8 caracteres
+    if (matricula.length !== 8) {
+        alert("❌ La matrícula debe tener exactamente 8 caracteres. (Tienes: " + matricula.length + ")");
+        return; // Detiene la ejecución
+    }
+
+    if (isNaN(idRol) || idRol <= 0) {
+        alert("⚠️ Seguridad: El rol seleccionado no es válido.");
+        return;
+    }
+
+    if (telefono.length !== 10 || !/^\d+$/.test(telefono)) {
+        alert("❌ El teléfono debe tener exactamente 10 dígitos numéricos.");
+        return;
+    }
+
 
     const usuarioActualizado = {
-
-        nombreUsuario: document.getElementById("editarNombreUsuario").value,
-        apellidoPaterno: document.getElementById("editarApellidoPaterno").value,
-        apellidoMaterno: document.getElementById("editarApellidoMaterno").value,
-        matricula: document.getElementById("editarMatricula").value,
-        telefono: document.getElementById("editarTelefono").value,
-        idRol: parseInt(document.getElementById("selectRoles").value)
+        nombreUsuario: nombreUsuario,
+        apellidoPaterno: apellidoPaterno,
+        apellidoMaterno: apellidoMaterno,
+        matricula: matricula,
+        telefono: telefono,
+        idRol: idRol
 
     };
 
@@ -410,7 +439,7 @@ function configurarFormularioCrearUsuario() {
 ====================================================== */
 
 function guardarNuevoUsuario() {
-     
+
     const matricula = document.getElementById("nuevaMatricula").value.trim();
     const nombreUsuario = document.getElementById("nuevoNombre").value.trim();
     const apellidoPaterno = document.getElementById("nuevoApellidoP").value.trim();
@@ -418,21 +447,26 @@ function guardarNuevoUsuario() {
     const telefono = document.getElementById("nuevoTelefono").value.trim();
     const idRol = parseInt(document.getElementById("selectRoles").value);
     const contrasena = document.getElementById("nuevoPassword").value;
-    
-    
-    const soloNumeros = /^\d+$/.exec(matricula); 
+    const estado = 1;
+
+    if (!matricula || !nombreUsuario || !apellidoPaterno || !apellidoMaterno || !telefono || !contrasena) {
+        alert("⚠️ Todos los campos son obligatorios.");
+        return;
+    }
+
+    const soloNumeros = /^\d+$/.exec(matricula);
 
     if (!soloNumeros) {
         alert("❌ La matrícula solo debe contener números.");
         return; // Detiene la ejecución
     }
-    
+
     // 2. Validamos que sean exactamente 8 caracteres
     if (matricula.length !== 8) {
         alert("❌ La matrícula debe tener exactamente 8 caracteres. (Tienes: " + matricula.length + ")");
         return; // Detiene la ejecución
     }
-    
+
     // Validación de Roles
     if (isNaN(idRol) || idRol <= 0) {
         alert("⚠️ Seguridad: El rol seleccionado no es válido.");
@@ -446,12 +480,12 @@ function guardarNuevoUsuario() {
         alert("❌ La contraseña debe tener al menos 8 caracteres, una mayúscula y un número.");
         return;
     }
-    
+
     if (telefono.length !== 10 || !/^\d+$/.test(telefono)) {
         alert("❌ El teléfono debe tener exactamente 10 dígitos numéricos.");
         return;
     }
-   
+
     const nuevoUsuario = {
         nombreUsuario: nombreUsuario,
         apellidoPaterno: apellidoPaterno,
@@ -460,9 +494,9 @@ function guardarNuevoUsuario() {
         telefono: telefono,
         idRol: idRol,
         contrasena: contrasena,
-        estado: 1
+        estado: estado
     };
-  
+
 
     fetch(urlApiUsuarios, {
 

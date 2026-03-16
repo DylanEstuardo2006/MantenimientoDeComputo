@@ -67,11 +67,11 @@ function listarMarcas() {
                     <td>${marca.idMarca}</td>
                     <td>${marca.nombreMarca}</td>
                     <td class="text-center">
-                        <button class="btn btn-sm btn-outline-warning me-2"
+                        <button id="btn-editar-marcas" class="btn btn-sm btn-outline-warning me-2"
                                 onclick="cargarVista('views/actualizar-marcas.html?idMarca=${marca.idMarca}')">
                             <i class="bi bi-pencil"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-danger"
+                        <button  id="btn-eliminar-marcas" class="btn btn-sm btn-outline-danger"
                                 onclick="prepararEliminacionMarcas(${marca.idMarca},'${marca.nombreMarca}')">
                             <i class="bi bi-trash"></i>
                         </button>
@@ -130,7 +130,7 @@ function configurarFormularioCrearMarca()
 // ─────────────────────────────────────────────
 guardarNuevaMarca = function () {
 
-    const nombreMarca = document.getElementById('nombreMarca').value.trim();
+    const nombreMarca = document.getElementById('nombreMarca')?.value.trim();
     
     if (!nombreMarca) {
         alert("El nombre no puede estar vacío.");

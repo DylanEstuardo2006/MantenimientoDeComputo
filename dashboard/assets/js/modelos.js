@@ -11,6 +11,7 @@ const urlApiMarcas = "https://pratica-5b-node-s1hu.vercel.app/api/marcas";
 // Variable global para guardar el ID del modelo que se quiere eliminar
 let idModeloABorrar = null;
 
+
 // ==========================================
 // FUNCION PARA OBTENER HEADERS DE LAS PETICIONES
 // ==========================================
@@ -32,13 +33,14 @@ function obtenerHeaders() {
 
 function inicializarModuloModelos(ruta) {
 
+    const rutaLimpia = ruta.toLowerCase();
     console.log("Inicializando interfaz de modelos...");
 
     /* -------------------------
        VISTA: LISTAR MODELOS
     --------------------------*/
 
-    if (ruta.includes("modelos.html")) {
+    if (rutaLimpia.includes("modelos.html")) {
 
         listarModelos(); // carga la tabla
 
@@ -51,14 +53,23 @@ function inicializarModuloModelos(ruta) {
             btnBorrar.onclick = confirmarBorradoModelosFinal;
         }
     }
-     
 
+    /* -------------------------
+       VISTA: CREAR MODELO
+    --------------------------*/
+
+    if (rutaLimpia.includes("crear-modelo.html")) {
+        // cargamos el select sin marca seleccionada
+        renderizarSelectMarcas("selectMarca");
+        configurarFormularioCrearModelos();
+
+    }
 
     /* -------------------------
        VISTA: EDITAR MODELO
     --------------------------*/
 
-    else if (ruta.includes("actualizar-modelo.html")) {
+    if (rutaLimpia.includes("actualizar-modelo.html")) {
 
         // Obtenemos el ID que viene en la URL
         const urlParams = new URLSearchParams(ruta.split("?")[1]);
@@ -72,32 +83,17 @@ function inicializarModuloModelos(ruta) {
 
             const btnActualizar = document.getElementById("btnActualizarModelos");
 
-            if(btnActualizar){
-                btnActualizar.onclick = function (e){
-                  e.preventDefault();
-                  actualizarModelo(idModeloAEditar);
+            if (btnActualizar) {
+                btnActualizar.onclick = function (e) {
+                    e.preventDefault();
+                    actualizarModelo(idModeloAEditar);
                 }
             }
-            
+
         }
     }
 
-    /* -------------------------
-       VISTA: CREAR MODELO
-    --------------------------*/
 
-    else if (ruta.includes("crear-modelo.html")) {
-
-        const select = document.getElementById("selectMarca");
-
-        if (select) {
-
-            // cargamos el select sin marca seleccionada
-            renderizarSelectMarcas("selectMarca");
-            configurarFormularioCrearModelos();
-            
-        }
-    }
 }
 
 
@@ -190,7 +186,7 @@ function listarModelos() {
                     <td class="text-center">
 
                         <!-- BOTÓN EDITAR -->
-                        <button 
+                        <button id ="btn-editar-modelos"
                             class="btn btn-sm btn-outline-warning me-2"
                             onclick="cargarVista('views/actualizar-modelo.html?idModelo=${modelo.idModelo}')"
                         >
@@ -198,7 +194,7 @@ function listarModelos() {
                         </button>
 
                         <!-- BOTÓN ELIMINAR -->
-                        <button 
+                        <button id = "btn-eliminar-modelos"
                             class="btn btn-sm btn-outline-danger"
                             onclick="prepararEliminacionModelos(${modelo.idModelo}, '${modelo.nombreModelo}')"
                         >
@@ -298,16 +294,17 @@ function confirmarBorradoModelosFinal() {
     // Verificamos que exista un ID guardado
     if (!idModeloABorrar) return;
 
-    fetch(`${urlApiModelos}/${idModeloABorrar}`, {
-        method: "DELETE",
-        headers: obtenerHeaders()
-    })
+    fetch(`${urlApiModelos}/${idModeloABorrar}`, 
+    {
+        method: 'DELETE',
+        headers: obtenerHeaders() })
         .then(res => {
 
             if (!res.ok) {
-                throw new Error("No se pudo eliminar el modelo");
+                return res.text().then(text => {
+                    throw new Error(text);
+                });
             }
-
             return res.json();
         })
         .then(() => {
@@ -365,4 +362,111 @@ function cargarDatosEnFormularioModelos(id) {
 
         });
 
+}
+/* ========================================
+  FUNCIÓN ACTUALIZAR EL MODELO
+  ======================================== */
+function actualizarModelo(idModelo) {
+    const nombreModelo = document.getElementById("editNombreModelo").value.trim();
+    const idMarca = parseInt(document.getElementById("selectMarca").value);
+
+
+    if (!nombreModelo) {
+        alert("❌ El modelo no puede estar vacio");
+    }
+
+    if (isNaN(idMarca) || idMarca <= 0) {
+        alert("⚠️ Seguridad: La marca seleccionada no es válido.")
+    }
+    const modeloActualizado = {
+        nombreModelo: nombreModelo,
+        idMarca: idMarca
+    }
+    fetch(`${urlApiModelos}/${idModelo}`, {
+        method: "PUT",
+        headers: obtenerHeaders(),
+        body: JSON.stringify(modeloActualizado)
+    })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error("No se pudo actualizar el modelo");
+            }
+
+            return res.json();
+
+        })
+        .then(() => {
+            alert("Modelo actualizado correctamente");
+            cargarVista("views/modelos.html");
+        })
+        .catch(err => {
+            console.error("Error: ", err);
+
+            alert("Error al actualizar el modelo");
+        });
+}
+
+
+/* =======================================
+  FUNCIÓN: CONFIGURAR FORMULARIO CREAR
+=========================================== */
+
+function configurarFormularioCrearModelos() {
+
+    const btnGuardar = document.getElementById("btnGuardarModelo");
+    /* BOTÓN GUARDAR */
+    if (btnGuardar) {
+        btnGuardar.onclick = function (e) {
+            e.preventDefault();
+            guardarNuevoModelo();
+        }
+    }
+
+}
+
+/* =================================
+  CREAR NUEVO MODELO 
+  ================================= */
+function guardarNuevoModelo() {
+
+    const nombreModelo = document.getElementById("nuevoNombreModelo").value.trim();
+    const idMarca = parseInt(document.getElementById("selectMarca").value);
+
+    if (!nombreModelo) {
+        alert("❌ El modelo no puede estar vacio");
+        return;
+    }
+    // Validación de Marcas
+    if (isNaN(idMarca) || idMarca <= 0) {
+        alert("⚠️ Seguridad: La marca seleccionada no es valida.");
+        return;
+    }
+
+    const nuevoModelo = {
+        nombreModelo: nombreModelo,
+        idMarca: idMarca
+    }
+
+    fetch(urlApiModelos, {
+        method: "POST",
+        headers: obtenerHeaders(),
+        body: JSON.stringify(nuevoModelo)
+    })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error("Error al crear modelo");
+            }
+
+            return res.json();
+        })
+        .then(() => {
+            alert("Modelo creado correctamente");
+
+            cargarVista("views/modelos.html");
+        })
+        .catch(err => {
+            console.error("Error:", err);
+
+            alert("No se pudo crear el modelo");
+        })
 }

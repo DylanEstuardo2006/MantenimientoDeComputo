@@ -8,7 +8,7 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Nombre del Modelo</label>
-                        <input type="text" id="nombreModelo" class="form-control" placeholder="Ej: Galaxy S24 Ultra"
+                        <input type="text" id="nuevoNombreModelo" class="form-control" placeholder="Ej: Galaxy S24 Ultra"
                             required>
                     </div>
                     <div class="col-md-6">
@@ -22,7 +22,7 @@
                 <div class="d-flex flex-column-reverse flex-sm-row justify-content-end gap-2">
                     <button type="button" class="btn btn-light border"
                         onclick="cargarVista('views/modelos.html')">Cancelar</button>
-                    <button type="submit" class="btn btn-primary px-4">
+                    <button type="submit" id="btnGuardarModelo"class="btn btn-primary px-4">
                         <i class="bi bi-plus-circle me-2"></i> Guardar Modelo
                     </button>
                 </div>
