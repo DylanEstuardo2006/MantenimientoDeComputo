@@ -317,7 +317,7 @@ function cargarDatosUsuario(id) {
     FUNCIÓN ACTUALIZAR EL USUARIO 
     ======================================== */
 function actualizarUsuario(idUsuario) {
-    
+
     const nombreUsuario = document.getElementById("editarNombreUsuario").value.trim();
     const apellidoPaterno = document.getElementById("editarApellidoPaterno").value.trim();
     const apellidoMaterno = document.getElementById("editarApellidoMaterno").value.trim();

@@ -1,0 +1,66 @@
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+            <div class="card shadow-lg border-0">
+                <div class="card-header py-4 text-white text-center" style="background-color: #0d1b2a;">
+                    <h2 class="h3 mb-0 fw-bold">
+                        <i class="bi bi-plus-square-fill me-2"></i> REGISTRO DE NUEVO EQUIPO
+                    </h2>
+                    <p class="mb-0 opacity-75">Complete todos los campos para dar de alta el dispositivo en el sistema</p>
+                </div>
+
+                <div class="card-body p-5">
+                    <form id="formCrearDispositivo">
+                        <div class="row g-4">
+                            <div class="col-md-7">
+                                <label class="form-label fs-5 fw-semibold text-secondary">Nombre del Dispositivo</label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text bg-light"><i class="bi bi-laptop"></i></span>
+                                    <input type="text" id="editarNombreDispositivo" class="form-control" placeholder="Ej: Estación de Trabajo Dell Vostro">
+                                </div>
+                            </div>
+
+                            <div class="col-md-5">
+                                <label class="form-label fs-5 fw-semibold text-secondary">Número de Inventario</label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text bg-light"><i class="bi bi-hash"></i></span>
+                                    <input type="text" id="editarNumeroInventario" class="form-control" placeholder="11 dígitos">
+                                </div>
+                            </div>
+
+                            <hr class="my-4 text-muted">
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold text-uppercase small text-muted">Tipo de Equipo</label>
+                                <select id="selectTipoDispositivo" class="form-select form-select-lg border-primary-subtle"></select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold text-uppercase small text-muted">Modelo Específico</label>
+                                <select id="selectModelos" class="form-select form-select-lg border-primary-subtle"></select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold text-uppercase small text-muted">Ubicación / Laboratorio</label>
+                                <select id="selectLaboratorios" class="form-select form-select-lg border-primary-subtle"></select>
+                            </div>
+                        </div>
+
+                        <div class="row mt-5">
+                            <div class="col-12 d-flex justify-content-between align-items-center">
+                                <button type="button" class="btn btn-link text-decoration-none text-muted" onclick="cargarVista('views/dispositivos.html')">
+                                    <i class="bi bi-arrow-left"></i> Volver al listado
+                                </button>
+                                <div>
+                                    <button type="submit" id="btnGuardarDispositivo" class="btn btn-primary btn-lg px-5 shadow">
+                                        <i class="bi bi-check-circle me-2"></i>Registrar Dispositivo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

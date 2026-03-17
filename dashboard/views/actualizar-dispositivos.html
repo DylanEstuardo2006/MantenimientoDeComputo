@@ -1,0 +1,55 @@
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+            <div class="card shadow-lg border-0 overflow-hidden">
+                <div class="card-header py-4 text-white text-center" style="background-color: #0d1b2a;">
+                    <h2 class="h3 mb-0 fw-bold text-uppercase">
+                        <i class="bi bi-pencil-square me-2 text-warning"></i> Actualizar Información
+                    </h2>
+                </div>
+
+                <div class="card-body p-5">
+                    <form id="formActualizarDispositivo">
+                        <div class="row g-4">
+                            <div class="col-md-8">
+                                <label class="form-label fs-5 fw-semibold">Nombre del Dispositivo</label>
+                                <input type="text" id="editarNombreDispositivo" class="form-control form-control-lg bg-light border-0">
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fs-5 fw-semibold">Inventario No.</label>
+                                <input type="text" id="editarNumeroInventario" class="form-control form-control-lg bg-light border-0">
+                            </div>
+
+                            <div class="col-12"><hr></div>
+
+                            <div class="col-md-4 text-center">
+                                <label class="form-label d-block fw-bold text-primary mb-3"><i class="bi bi-cpu me-1"></i> Tipo</label>
+                                <select id="selectTipoDispositivo" class="form-select form-select-lg"></select>
+                            </div>
+
+                            <div class="col-md-4 text-center border-start border-end">
+                                <label class="form-label d-block fw-bold text-primary mb-3"><i class="bi bi-tags me-1"></i> Modelo</label>
+                                <select id="selectModelos" class="form-select form-select-lg"></select>
+                            </div>
+
+                            <div class="col-md-4 text-center">
+                                <label class="form-label d-block fw-bold text-primary mb-3"><i class="bi bi-geo-alt me-1"></i> Laboratorio</label>
+                                <select id="selectLaboratorios" class="form-select form-select-lg"></select>
+                            </div>
+                        </div>
+
+                        <div class="mt-5 pt-3 border-top d-flex justify-content-end gap-3">
+                            <button type="button" class="btn btn-outline-secondary btn-lg px-4" onclick="cargarVista('views/dispositivos.html')">
+                                Cancelar
+                            </button>
+                            <button type="submit" id="btnActualizarDispositivo" class="btn btn-warning btn-lg px-5 fw-bold shadow-sm">
+                                <i class="bi bi-save2 me-2"></i>Guardar Cambios
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

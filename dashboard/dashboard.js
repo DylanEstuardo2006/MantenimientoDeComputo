@@ -114,7 +114,7 @@ window.cargarVista = function (ruta) {
                     inicializarModuloUsuarios(ruta);
                 }
             }
-            if(ruta.includes('dispositivos.html' || ruta.includes('crear-dispositivos.html')) || ruta.includes('actualizar-dispositivos.html'))
+            if(ruta.includes('dispositivos.html') || ruta.includes('crear-dispositivos.html') || ruta.includes('actualizar-dispositivos.html'))
             {
                if(typeof inicializarModuloDispositivos === 'function')
                {

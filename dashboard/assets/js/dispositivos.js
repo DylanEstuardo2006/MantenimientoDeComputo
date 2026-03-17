@@ -37,6 +37,7 @@ function obtenerHeaders() {
 ====================================================== */
 
 function inicializarModuloDispositivos(ruta) {
+  
 
     const rutaLimpia = ruta.toLowerCase();
 
@@ -61,7 +62,6 @@ function inicializarModuloDispositivos(ruta) {
         * TODO: CREAR DISPOSITIVO
        ============================== */
     if (rutaLimpia.includes("crear-dispositivos.html")) {
-
 
         renderizarSelectTipoDispositivo("selectTipoDispositivo");
         renderizarSelectModelos("selectModelos");
@@ -111,7 +111,7 @@ function renderizarSelectTipoDispositivo(idSelect, idTipoDispositivoSelect = nul
         .then(res => res.json())
 
         .then(tipoDispositivo => {
-
+           
             select.innerHTML = `<option disabled selected> Selecciones un Tipo de Dispositivo..... </option>`;
 
             tipoDispositivo.forEach(tipo => {
@@ -150,6 +150,7 @@ function renderizarSelectLaboratorios(idSelect, idLaboratorioSeleccionado) {
         .then(res => res.json())
 
         .then(laboratorios => {
+           
             select.innerHTML = `<option disabled selected>Seleeciona un laboratorio... </option>`;
 
             laboratorios.forEach(lab => {
@@ -159,7 +160,7 @@ function renderizarSelectLaboratorios(idSelect, idLaboratorioSeleccionado) {
                 option.value = lab.idLaboratorio;
                 option.textContent = lab.nombreLaboratorio;
 
-                if (idLaboratorioSeleccionado && laboratorios.idLaboratorio == idLaboratorioSeleccionado) {
+                if (idLaboratorioSeleccionado && lab.idLaboratorio == idLaboratorioSeleccionado) {
                     option.selected = true;
                 }
 
@@ -182,6 +183,8 @@ function renderizarSelectModelos(idSelect, idModeloSeleccionado = null) {
     fetch(urlApiModelosSelect, { headers: obtenerHeaders() })
         .then(res => res.json())
         .then(modelos => {
+           
+
             select.innerHTML = `<option disabled selected>Seleccione un modelo...</option>`;
 
             modelos.forEach(modelo => {
@@ -339,29 +342,193 @@ function confirmarBorradoDispositivoFinal() {
 function cargarDatosDispositivos(id) {
     fetch(`${urlApiDispositivos}/${id}`, { headers: obtenerHeaders() })
 
-     .then(res => res.json())
-     .then(dispositivo => { 
-        document.getElementById("editarNombreDispositivo").value = dispositivo.nombreDispositivo;
-        document.getElementById("editarNumeroInventario").value = dispositivo.numeroInventario;
-         
-        renderizarSelectTipoDispositivo("selectTipoDispositivo", dispositivo.idTipoDispositivo);
-        renderizarSelectModelos("selectModelos", dispositivo.idModelo);
-        renderizarSelectLaboratorios("selectLaboratorios", dispositivo.idLaboratorio);
-     }) 
-     .catch(err => { 
-        console.error("Error cargando el dispositivo", err);
-     })
+        .then(res => res.json())
+        .then(dispositivo => {
+            document.getElementById("editarNombreDispositivo").value = dispositivo.nombreDispositivo;
+            document.getElementById("editarNumeroInventario").value = dispositivo.numeroInventario;
+
+            renderizarSelectTipoDispositivo("selectTipoDispositivo", dispositivo.idTipoDispositivo);
+            renderizarSelectModelos("selectModelos", dispositivo.idModelo);
+            renderizarSelectLaboratorios("selectLaboratorios", dispositivo.idLaboratorio);
+        })
+        .catch(err => {
+            console.error("Error cargando el dispositivo", err);
+        })
 }
 /** =======================================
 * TODO: FUNCIÓN ACTUALIZAR EL DISPOSITIVO
 =========================================== */
 
-function actualizarDispositivo(idDispositivo) { 
+function actualizarDispositivo(idDispositivo) {
     // ? Traemos los datos 
 
-    const nombreDispositivo = document.getElementById("editarNombreDispositivo");
-    const numeroInventario = document.getElementById("editarNumeroInventario");
+    const nombreDispositivo = document.getElementById("editarNombreDispositivo").value.trim();
+    const numeroInventario = document.getElementById("editarNumeroInventario").value.trim();
     const idLaboratorio = parseInt(document.getElementById("selectLaboratorios").value);
     const idTipoDispositivo = parseInt(document.getElementById("selectTipoDispositivo").value);
     const idModelo = parseInt(document.getElementById("selectModelos").value);
+
+    if (!nombreDispositivo) {
+        alert("❌ El nombre no puede estar vacio");
+        return;
+    }
+
+    const soloNumeros = /^\d+$/.exec(numeroInventario);
+
+    if (!soloNumeros) {
+        alert("❌ El número de inventario debe contener números.");
+        return; // Detiene la ejecución
+    }
+
+    if (numeroInventario.length !== 11) {
+        alert("❌ La matrícula debe tener exactamente 11 caracteres. (Tienes: " + numeroInventario.length + ")")
+        return;
+    }
+
+    if (isNaN(idTipoDispositivo) || idTipoDispositivo <= 0) {
+        alert("⚠️ Seguridad: El tipo de dispositivo seleccionado no es válido.");
+        return;
+    }
+
+    if (isNaN(idLaboratorio) || idLaboratorio <= 0) {
+        alert("⚠️ Seguridad: El laboratorio seleccionado no es válido.");
+        return;
+    }
+
+    if (isNaN(idModelo) || idModelo <= 0) {
+        alert("⚠️ Seguridad: El modelo seleccionado no es válido.");
+        return;
+    }
+
+    const dispositivoActualizado = {
+        nombreDispositivo: nombreDispositivo,
+        numeroInventario: numeroInventario,
+        idTipoDispositivo: idTipoDispositivo,
+        idLaboratorio: idLaboratorio,
+        idModelo: idModelo
+    };
+
+    fetch(`${urlApiDispositivos}/${idDispositivo}`, {
+        method: "PUT",
+        headers: obtenerHeaders(),
+        body: JSON.stringify(dispositivoActualizado)
+    })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error("No se pudo actualizar el dispositivo");
+            }
+
+            return res.json();
+        })
+
+        .then(() => {
+            alert("Dispositivo actualizado correctamente");
+
+            cargarVista("views/dispositivos.html");
+        })
+        .catch(err => {
+            console.error("Error: ", err);
+
+            alert("Error al actualizar el dispositivo");
+        })
+}
+
+/**  =================================
+ *  TODO: CONFIGURAR FORMULARIO CREAR
+====================================== */
+
+function configurarFormularioCrearDispositivo() {
+
+    const btnGuardar = document.getElementById("btnGuardarDispositivo");
+
+    if (btnGuardar) {
+        btnGuardar.onclick = function (e) {
+            e.preventDefault();
+            guardarNuevoDispositivo();
+        }
+    }
+}
+
+/**  =================================
+ *  TODO: CREAR NUEVO DISPOSITIVO
+====================================== */
+
+function guardarNuevoDispositivo() {
+
+    // ? Traemos los datos 
+
+    const nombreDispositivo = document.getElementById("editarNombreDispositivo").value.trim();
+    const numeroInventario = document.getElementById("editarNumeroInventario").value.trim();
+    const idLaboratorio = parseInt(document.getElementById("selectLaboratorios").value);
+    const idTipoDispositivo = parseInt(document.getElementById("selectTipoDispositivo").value);
+    const idModelo = parseInt(document.getElementById("selectModelos").value);
+
+    if (!nombreDispositivo) {
+        alert("❌ El nombre no puede estar vacio");
+        return;
+    }
+
+    const soloNumeros = /^\d+$/.exec(numeroInventario);
+
+    if (!soloNumeros) {
+        alert("❌ El número de inventario debe contener números.");
+        return; // Detiene la ejecución
+    }
+
+    if (numeroInventario.length !== 11) {
+        alert("❌ La matrícula debe tener exactamente 11 caracteres. (Tienes: " + numeroInventario.length + ")")
+        return;
+    }
+
+    if (isNaN(idTipoDispositivo) || idTipoDispositivo <= 0) {
+        alert("⚠️ Seguridad: El tipo de dispositivo seleccionado no es válido.");
+        return;
+    }
+
+    if (isNaN(idLaboratorio) || idLaboratorio <= 0) {
+        alert("⚠️ Seguridad: El laboratorio seleccionado no es válido.");
+        return;
+    }
+
+    if (isNaN(idModelo) || idModelo <= 0) {
+        alert("⚠️ Seguridad: El nodelo seleccionado no es válido.");
+        return;
+    }
+
+    const nuevoDispositivo = {
+        nombreDispositivo: nombreDispositivo,
+        numeroInventario: numeroInventario,
+        idTipoDispositivo: idTipoDispositivo,
+        idLaboratorio: idLaboratorio,
+        idModelo: idModelo
+    };
+
+    fetch(urlApiDispositivos, {
+        method: "POST",
+        headers: obtenerHeaders(),
+        body: JSON.stringify(nuevoDispositivo)
+    })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error("Error al crear Dispositivo")
+            }
+            return res.json();
+        })
+
+        .then(() => {
+
+            alert("Dispositivo creado correctamente");
+
+            cargarVista("views/dispositivos.html");
+
+        })
+
+        .catch(err => {
+
+            console.error("Error:", err);
+
+            alert("No se pudo crear el dispositivo");
+
+        });
+
 }
