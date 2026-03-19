@@ -85,7 +85,7 @@ window.cargarVista = function (ruta) {
 
     fetch(ruta)
         .then(response => response.text())
-        .then(data => {  
+        .then(data => {
             // Inyectamos el HTML en el contenedor central
             document.getElementById("contenido-principal").innerHTML = data;
 
@@ -114,12 +114,16 @@ window.cargarVista = function (ruta) {
                     inicializarModuloUsuarios(ruta);
                 }
             }
-            if(ruta.includes('dispositivos.html') || ruta.includes('crear-dispositivos.html') || ruta.includes('actualizar-dispositivos.html'))
-            {
-               if(typeof inicializarModuloDispositivos === 'function')
-               {
-                   inicializarModuloDispositivos(ruta);
-               }
+            if (ruta.includes('dispositivos.html') || ruta.includes('crear-dispositivos.html') || ruta.includes('actualizar-dispositivos.html')) {
+                if (typeof inicializarModuloDispositivos === 'function') {
+                    inicializarModuloDispositivos(ruta);
+                }
+            }
+
+            if (ruta.includes('ordenes.html') || ruta.includes('crear-ordenes.html') || ruta.includes('detalles-ordenes.html')) {
+                if (typeof inicializarModuloOrdenes === 'function') {
+                    inicializarModuloOrdenes(ruta);
+                }
             }
 
             // --- GESTIÓN DE UI (Cerrar sidebar en móviles tras click) ---
