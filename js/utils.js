@@ -1,4 +1,4 @@
-  const btnToggle = document.getElementById("btnTogglePassword");
+const btnToggle = document.getElementById("btnTogglePassword");
 const inputPass = document.getElementById("password");
 const icono = document.getElementById("iconoOjito");
   

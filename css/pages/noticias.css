@@ -1,0 +1,44 @@
+/* Mejora de las tarjetas */
+.custom-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.custom-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+/* Controlar el tamaño de las imágenes para que todas sean iguales */
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+/* Truncar texto para que las tarjetas no varíen de tamaño */
+.card-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.card-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+#modalNoticia .modal-content {
+    background-color: #ffffff;
+}
+
+#modalNoticia .badge {
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
+
+/* Estilo para el bloque de información */
+#modal-content-body p {
+    line-height: 1.6;
+}
