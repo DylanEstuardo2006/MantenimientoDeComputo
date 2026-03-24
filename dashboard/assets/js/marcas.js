@@ -1,6 +1,9 @@
 // ============================================================
 //  marcas.js  –  CRUD completo para el módulo de Marcas
 // ============================================================
+if (!localStorage.getItem("token")) {
+    window.location.replace("../login.html"); // .replace es mejor para que no puedan volver atrás
+}
 
 const urlMarcas = 'https://pratica-5b-node-s1hu.vercel.app/api/marcas';
 

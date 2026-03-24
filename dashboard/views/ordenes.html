@@ -1,8 +1,78 @@
-<!---Encabezado del modulo -->
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="fw-bold">Ordenes de Trabajo</h4>
+<div class="d-flex justify-content-between align-items-center mb-3">
 
-    <button class="btn btn-primary" id="btn-crear-usuario"onclick="cargarVista('views/crear-ordenes.html')">
-        <i class="bi bi-plus-lg me-2"></i> Nuevo Dispositivo
+    <div>
+        <h3 class="mb-0">Órdenes de Trabajo</h3>
+        <small class="text-muted">Gestión de mantenimientos</small>
+    </div>
+
+    <button class="btn btn-primary" onclick="abrirModalCrearOrden()">
+        <i class="bi bi-plus-lg"></i> Nueva Orden
     </button>
+
+</div>
+<div class="row g-4">
+
+    <!-- 🟦 LISTADO -->
+    <div class="col-lg-5">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">Órdenes</h5>
+            </div>
+
+            <div class="card-body" id="listaOrdenes" style="max-height: 70vh; overflow-y: auto;">
+                <!-- Cards dinámicas -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 🟩 DETALLE -->
+    <div class="col-lg-7">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Detalle de Orden</h5>
+            </div>
+
+            <div class="card-body" id="detalleOrden">
+                <p class="text-muted">Selecciona una orden...</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="modal fade" id="modalCrearOrden" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Nueva Orden</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <!-- LABORATORIO -->
+                <div class="mb-3">
+                    <label class="form-label">Laboratorio</label>
+                    <select id="labSelect" class="form-select">
+                        <option value="">Selecciona un laboratorio</option>
+                    </select>
+                </div>
+
+                <!-- DISPOSITIVOS -->
+                <div class="mb-3">
+                    <label class="form-label">Dispositivos</label>
+                    <div id="listaDispositivos" class="border rounded p-2" style="max-height:250px; overflow:auto;">
+                        <p class="text-muted">Selecciona un laboratorio primero</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn btn-success" onclick="crearOrden()">Crear Orden</button>
+            </div>
+
+        </div>
+    </div>
 </div>

@@ -1,6 +1,9 @@
 /* ======================================================
    CONFIGURACIÓN GENERAL
 ====================================================== */
+if (!localStorage.getItem("token")) {
+    window.location.replace("../login.html"); // .replace es mejor para que no puedan volver atrás
+}
 
 const urlApiUsuarios = "https://pratica-5b-node-s1hu.vercel.app/api/usuarios";
 const urlApiRoles = "https://pratica-5b-node-s1hu.vercel.app/api/roles";

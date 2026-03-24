@@ -1,6 +1,9 @@
 /* ======================================================
    CONFIGURACIÓN GENERAL DEL MÓDULO
 ====================================================== */
+if (!localStorage.getItem("token")) {
+    window.location.replace("../login.html"); // .replace es mejor para que no puedan volver atrás
+}
 
 // URL de la API de modelos
 const urlApiModelos = "https://pratica-5b-node-s1hu.vercel.app/api/modelos";

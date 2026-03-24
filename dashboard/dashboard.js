@@ -20,6 +20,7 @@ function inicializarDashboard() {
     // Intentamos obtener la sesión
     const sesion = localStorage.getItem("userSession");
 
+
     if (!sesion) {
         window.location.replace("../login.html");
         return;
@@ -32,28 +33,51 @@ function inicializarDashboard() {
      * 
      * TODO  USAMOS MATRICULA Por que el objeto no trae nombreUsuario 
     */
-    const displayNombre = document.getElementById("nombre-usuario-header")
+    const displayNombre = document.getElementById("nombre-usuario-header");
+
     if (displayNombre) {
         const token = localStorage.getItem("token");
 
-        const payload = JSON.parse(atob(token.split(".")[1]));
+        if (token) {
+            try {
+                // Dividimos el token y decodificamos el payload (segunda parte del JWT)
+                const base64Url = token.split(".")[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/'); // Formateo estándar Base64
+                const payload = JSON.parse(atob(base64));
 
-        document.getElementById("nombre-usuario-header").textContent =
-            `Matrícula: ${payload.matricula}`;
+                displayNombre.textContent = `Matrícula: ${payload.matricula || 'N/A'}`;
+            } catch (error) {
+                console.error("Error al decodificar el token:", error);
+                displayNombre.textContent = "Error de sesión";
+            }
+        } else {
+            displayNombre.textContent = "Sin sesión";
+        }
     }
-
-    // AJUSTE: Usamos .rol en lugar de .idRol porque así viene del servidor
+    
+    // ! AJUSTE: Usamos .rol en lugar de .idRol porque así viene del servidor
+    
     const rolTexto = usuarioGlobal.rol === 1 ? "Administrador" : "Técnico";
     const displayRol = document.getElementById("rol-usuario-header");
+
     if (displayRol) {
         displayRol.textContent = rolTexto;
     }
 
-    // --- LÓGICA POR ROLES ---
+    // * Confirmar CerrarSession
+    const btnBorrar = document.getElementById("btnConfirmarCerrado");
+
+    if (btnBorrar) {
+        btnBorrar.onclick = confirmarCerrarSession;
+    }
+
+    //  ! --- LÓGICA POR ROLES ---
+
     if (usuarioGlobal.rol === 1) {
         cargarVista('views/administrador.html');
     } else {
-        // Ocultar elementos para técnicos
+
+        // ! Ocultar elementos para técnicos
         ["btn-menu-usuarios", "btn-menu-ordenes"].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.style.display = 'none';
@@ -62,7 +86,7 @@ function inicializarDashboard() {
     }
 }
 /* ==========================================================================
-   SISTEMA DE RUTEO DINÁMICO (SPA - Single Page Application)
+  TODO:  SISTEMA DE RUTEO DINÁMICO (SPA - Single Page Application)
    ========================================================================== */
 
 /**
@@ -90,8 +114,8 @@ window.cargarVista = function (ruta) {
             document.getElementById("contenido-principal").innerHTML = data;
 
             /* ---------------------------------------------------------
-               INICIALIZACIÓN DE MÓDULOS ESPECÍFICOS
-               Dependiendo de la ruta cargada, activamos su lógica JS.
+              TODO:  INICIALIZACIÓN DE MÓDULOS ESPECÍFICOS
+              TODO:  Dependiendo de la ruta cargada, activamos su lógica JS.
                --------------------------------------------------------- */
 
             // Lógica de MARCAS
@@ -135,11 +159,7 @@ window.cargarVista = function (ruta) {
         .catch(err => console.error("Error al cargar la vista:", err));
 }
 
-/*Función que trae el btn de salida de logueo y termina la sesión */
-document.getElementById("btn-logout").addEventListener("click", () => {
-    localStorage.clear(); // Borra el token y la sesión
-    window.location.replace("../login.html");
-});
+
 /* ==========================================================================
    INTERACCIÓN DE LA INTERFAZ (UI)
    Control de Sidebar, Menús Colapsables y Responsividad.
@@ -182,5 +202,45 @@ window.addEventListener("resize", () => {
     }
 });
 
+const boton = document.getElementById("btn-logout");
+
+boton.addEventListener("click", function () {
+    const token = localStorage.getItem("token");
+
+    const payload = JSON.parse(atob(token.split(".")[1]));
+
+    const matricula = payload.matricula;
+
+    modalCerrarSession(matricula);
+});
+
+window.modalCerrarSession = function (matriculaGuardada) {
+
+    const matriculaUsuario = document.getElementById("matriculaCerrarSession");
+
+    if (matriculaUsuario) {
+        matriculaUsuario.innerHTML = matriculaGuardada;
+    }
+
+    const miModal = new bootstrap.Modal(
+        document.getElementById("modalCerrarSession")
+    );
+
+    miModal.show();
+}
+
+function confirmarCerrarSession() {
+
+    localStorage.clear(); // Borra el token y la sesión
+
+    const modalElement = document.getElementById("modalCerrarSession");
+    const modalInstance = bootstrap.Modal.getInstance(modalElement);
+
+    if (modalInstance) {
+        modalInstance.hide();
+    }
+    window.location.replace("../login.html");
+
+}
 // Al cargar la página, arrancamos la lógica
 document.addEventListener("DOMContentLoaded", inicializarDashboard);

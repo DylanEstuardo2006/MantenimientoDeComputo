@@ -1,0 +1,28 @@
+.card-hover {
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.card-hover:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+.estado-badge {
+    font-size: 0.8rem;
+    padding: 5px 10px;
+    border-radius: 20px;
+}
+
+.estado-espera {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.estado-proceso {
+    background-color: #0d6efd;
+}
+
+.estado-finalizado {
+    background-color: #198754;
+}
