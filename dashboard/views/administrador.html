@@ -22,7 +22,7 @@
                                 dispositivos, órdenes de trabajo y dar seguimiento a los mantenimientos
                                 realizados a los equipos de cómputo dentro de la institución.
                             </p>
-                            <button class="btn btn-primary btn-lg" type="button">Ver órdenes de trabajo</button>
+                            <button class="btn btn-primary btn-lg" type="button" onclick="cargarVista('views/ordenes.html')">Ver órdenes de trabajo</button>
                         </div>
                     </div>
                     <div class="row align-items-md-stretch">
@@ -35,18 +35,16 @@
                                     equipo.
                                     Esto permite mantener un control organizado del inventario tecnológico.
                                 </p>
-                                <button class="btn btn-outline-light" type="button">Administrar dispositivos</button>
+                                <button class="btn btn-outline-light" type="button" onclick="cargarVista('views/dispositivos.html')" >Administrar dispositivos</button>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="h-100 p-5 bg-body-tertiary border rounded-3">
-                                <h2>Órdenes de Mantenimiento</h2>
+                                <h2>Nuevo usuario</h2>
                                 <p>
-                                    Crea y da seguimiento a las órdenes de trabajo para el mantenimiento de equipos.
-                                    Podrás registrar los dispositivos involucrados, el tipo de mantenimiento,
-                                    los insumos utilizados y el estado de cada intervención realizada.
+                                Da click aquí para crear para entrar entrar al apartado de crear usuarios.
                                 </p>
-                                <button class="btn btn-outline-secondary" type="button">Gestionar órdenes</button>
+                                <button class="btn btn-outline-secondary" type="button" onclick="cargarVista('views/crear-usuario.html')" >Crear nuevo Usuario</button>
                             </div>
                         </div>
                     </div>
