@@ -237,65 +237,77 @@ document.addEventListener("change", async (e) => {
 ============================ */
 window.crearOrden = async function () {
     try {
-        // Obtenemos la sesión del localStorage
         const sesion = localStorage.getItem("userSession");
         const usuario = sesion ? JSON.parse(sesion) : null;
 
-        // CORRECCIÓN: Usamos usuario.id como me indicaste
         if (!usuario || !usuario.id) {
-            alert("Sesión no válida. Por favor, reingresa al sistema.");
-            return;
+            return alert("Sesión no válida. Por favor, reingresa.");
         }
 
-        const idLaboratorio = document.getElementById("labSelect").value;
+        const idLaboratorioRaw = document.getElementById("labSelect").value;
         const checks = document.querySelectorAll(".device-check:checked");
 
-        // Mapeamos cada checkbox seleccionado con su propio select de mantenimiento
-        const dispositivosData = Array.from(checks).map(check => {
-            const idDisp = check.value;
-            const selectMaint = document.querySelector(`.maint-type[data-device="${idDisp}"]`);
-            return {
-                idDispositivo: idDisp,
-                idTipoMantenimiento: selectMaint.value
-            };
-        });
-
-        if (!idLaboratorio || dispositivosData.length === 0) {
-            return alert("Debes seleccionar laboratorio y al menos un dispositivo.");
+        if (!idLaboratorioRaw || checks.length === 0) {
+            return alert("Selecciona laboratorio y al menos un dispositivo.");
         }
 
-        // 1. PASO 1: Crear la Orden (Cabecera)
+        // --- AQUÍ DEFINIMOS EL PAYLOAD (El que te faltaba) ---
+        const payload = {
+            idUsuario: parseInt(usuario.id),
+            idLaboratorio: parseInt(idLaboratorioRaw),
+            estado: 'espera',
+            insumos: 'Sin especificar',
+            horasHombre: 0,
+            fechaCreacion: new Date().toISOString().slice(0, 19).replace('T', ' ')
+        };
+
+        console.log("Payload que se enviará:", payload); // Para que lo veas en consola
+
+        // 1. PASO 1: Crear la Orden
         const resOrden = await fetch(`${urlApiOrdenes}/ordenes`, {
             method: "POST",
             headers: obtenerHeaders(),
-            body: JSON.stringify({
-                idUsuario: usuario.id, // <--- Aquí usamos el .id corregido
-                idLaboratorio: idLaboratorio,
-                estado: 'espera'
-            })
+            body: JSON.stringify(payload) // Ahora sí existe 'payload'
         });
 
-        const nuevaOrden = await resOrden.json();
-        if (!resOrden.ok) throw new Error("Error al generar la orden.");
-
-        // 2. PASO 2: Asociar Dispositivos (Detalle)
-        const resDetalle = await fetch(`${urlApiOrdenes}/Orden_dispositivos`, {
-            method: "POST",
-            headers: obtenerHeaders(),
-            body: JSON.stringify({
-                idOrden: nuevaOrden.idOrden,
-                dispositivos: dispositivosData // Enviamos el array de objetos {id, tipo}
-            })
-        });
-
-        if (resDetalle.ok) {
-            alert(`Orden #${nuevaOrden.idOrden} creada correctamente ✅`);
-            bootstrap.Modal.getInstance(document.getElementById('modalCrearOrden')).hide();
-            cargarOrdenes();
+        if (!resOrden.ok) {
+            const errorServer = await resOrden.json();
+            throw new Error(errorServer.message || "Error 403: No tienes permisos o datos inválidos.");
         }
 
+        const nuevaOrden = await resOrden.json();
+
+        // --- 2. PASO 2: Asociar Dispositivos (Uno por uno) ---
+        const dispositivosData = Array.from(checks).map(check => ({
+            idDispositivo: parseInt(check.value),
+            idTipoMantenimiento: parseInt(document.querySelector(`.maint-type[data-device="${check.value}"]`).value)
+        }));
+
+        // Usamos un bucle para que el backend reciba exactamente lo que espera
+        for (const disp of dispositivosData) {
+            const resDetalle = await fetch(`${urlApiOrdenes}/Orden_dispositivos`, {
+                method: "POST",
+                headers: obtenerHeaders(),
+                body: JSON.stringify({
+                    idOrden: nuevaOrden.idOrden, // El ID que recibimos del Paso 1
+                    idDispositivo: disp.idDispositivo,
+                    idTipoMantenimiento: disp.idTipoMantenimiento,
+                    realizado: 'no_realizado' // Valor inicial según tu SQL
+                })
+            });
+
+            if (!resDetalle.ok) {
+                console.error(`Error al guardar el dispositivo ${disp.idDispositivo}`);
+            }
+
+
+        }
+        // Si llegamos aquí, todo se procesó
+        alert(`Orden #${nuevaOrden.idOrden} y dispositivos guardados correctamente ✅`);
+        bootstrap.Modal.getInstance(document.getElementById('modalCrearOrden')).hide();
+        cargarOrdenes();
     } catch (error) {
         console.error("Fallo:", error);
-        alert("Error: " + error.message);
+        alert("Fallo: " + error.message);
     }
-};
+}; 
