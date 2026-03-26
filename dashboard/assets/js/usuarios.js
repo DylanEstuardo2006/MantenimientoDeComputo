@@ -149,12 +149,10 @@ function listarUsuarios() {
 
                 html += `
                 <tr>
-                    <td>${usuario.idUsuario}</td>
                     <td>${usuario.nombreUsuario}</td>
                     <td>${usuario.apellidoPaterno}</td>
                     <td>${usuario.apellidoMaterno}</td>
                     <td>${usuario.matricula}</td>
-                    <td>${usuario.telefono}</td>
                     <td><span class="badge bg-primary">${usuario.rol}</span></td>
 
                     <td class="text-center">

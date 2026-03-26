@@ -233,7 +233,7 @@ document.addEventListener("change", async (e) => {
 });
 
 /* =========================
-   BOTÓN: CREAR ORDEN
+   BOTÓN: CREAR ORDEN (CORREGIDO)
 ============================ */
 window.crearOrden = async function () {
     try {
@@ -251,7 +251,6 @@ window.crearOrden = async function () {
             return alert("Selecciona laboratorio y al menos un dispositivo.");
         }
 
-        // --- AQUÍ DEFINIMOS EL PAYLOAD (El que te faltaba) ---
         const payload = {
             idUsuario: parseInt(usuario.id),
             idLaboratorio: parseInt(idLaboratorioRaw),
@@ -261,53 +260,156 @@ window.crearOrden = async function () {
             fechaCreacion: new Date().toISOString().slice(0, 19).replace('T', ' ')
         };
 
-        console.log("Payload que se enviará:", payload); // Para que lo veas en consola
-
-        // 1. PASO 1: Crear la Orden
+        // --- 1. PASO 1: Crear la Orden (RUTA: /ordenes) ---
+        // Antes tenías aquí /orden_dispositivo/ y por eso el backend se quejaba
         const resOrden = await fetch(`${urlApiOrdenes}/ordenes`, {
             method: "POST",
             headers: obtenerHeaders(),
-            body: JSON.stringify(payload) // Ahora sí existe 'payload'
+            body: JSON.stringify(payload)
         });
 
         if (!resOrden.ok) {
             const errorServer = await resOrden.json();
-            throw new Error(errorServer.message || "Error 403: No tienes permisos o datos inválidos.");
+            throw new Error(errorServer.message || "Error al crear la cabecera de la orden.");
         }
 
         const nuevaOrden = await resOrden.json();
 
-        // --- 2. PASO 2: Asociar Dispositivos (Uno por uno) ---
+        // IMPORTANTE: Verifica si tu backend devuelve .id o .idOrden
+        const idOrdenGenerada = nuevaOrden.idOrden || nuevaOrden.id;
+
+        // --- 2. PASO 2: Asociar Dispositivos (RUTA: /orden_dispositivo/) ---
         const dispositivosData = Array.from(checks).map(check => ({
             idDispositivo: parseInt(check.value),
             idTipoMantenimiento: parseInt(document.querySelector(`.maint-type[data-device="${check.value}"]`).value)
         }));
 
-        // Usamos un bucle para que el backend reciba exactamente lo que espera
         for (const disp of dispositivosData) {
-            const resDetalle = await fetch(`${urlApiOrdenes}/Orden_dispositivos`, {
+            const resDetalle = await fetch(`${urlApiOrdenes}/orden_dispositivo`, {
                 method: "POST",
                 headers: obtenerHeaders(),
                 body: JSON.stringify({
-                    idOrden: nuevaOrden.idOrden, // El ID que recibimos del Paso 1
+                    idOrden: idOrdenGenerada,
                     idDispositivo: disp.idDispositivo,
                     idTipoMantenimiento: disp.idTipoMantenimiento,
-                    realizado: 'no_realizado' // Valor inicial según tu SQL
+                    realizado: 'no_realizado'
                 })
             });
 
             if (!resDetalle.ok) {
                 console.error(`Error al guardar el dispositivo ${disp.idDispositivo}`);
             }
-
-
         }
-        // Si llegamos aquí, todo se procesó
-        alert(`Orden #${nuevaOrden.idOrden} y dispositivos guardados correctamente ✅`);
+
+        alert(`Orden #${idOrdenGenerada} creada correctamente ✅`);
         bootstrap.Modal.getInstance(document.getElementById('modalCrearOrden')).hide();
         cargarOrdenes();
+
     } catch (error) {
         console.error("Fallo:", error);
         alert("Fallo: " + error.message);
     }
-}; 
+};
+
+window.descargarPDF = async function (idOrden) {
+    try {
+        const res = await fetch(`https://pratica-5b-node-s1hu.vercel.app/api/ordenTrabajo/${idOrden}/pdf`, {
+            headers: obtenerHeaders()
+        });
+        const data = await res.json();
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // --- 1. CONFIGURACIÓN DE COLORES Y FUENTES ---
+        const azulOscuro = [44, 62, 80];
+        const azulClaro = [52, 152, 219];
+        const grisTexto = [100, 100, 100];
+
+        // --- 2. ENCABEZADO CON ESTILO ---
+        // Rectángulo decorativo superior
+        doc.setFillColor(...azulOscuro);
+        doc.rect(0, 0, 210, 40, 'F');
+
+        doc.setTextColor(255, 255, 255);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(22);
+        doc.text("REPORTE TÉCNICO", 20, 20);
+
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        doc.text("SISTEMA DE MANTENIMIENTO DE EQUIPOS", 20, 28);
+        doc.text(`ORDEN DE TRABAJO #${data.idOrden}`, 190, 20, { align: "right" });
+
+        // --- 3. BLOQUE DE INFORMACIÓN (TARJETA) ---
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(11);
+        doc.setFont("helvetica", "bold");
+        doc.text("DETALLES DE LA ORDEN", 20, 55);
+
+        // Línea divisoria
+        doc.setDrawColor(...azulClaro);
+        doc.setLineWidth(0.5);
+        doc.line(20, 57, 190, 57);
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        // Columna Izquierda
+        doc.text(`Técnico Responsable: ${data.usuario}`, 25, 65);
+        doc.text(`Laboratorio: ${data.laboratorio}`, 25, 72);
+        // Columna Derecha
+        const fechaFormateada = new Date(data.fecha).toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
+        doc.text(`Fecha Emisión: ${fechaFormateada}`, 120, 65);
+        doc.text(`Estado: ${data.estado.toUpperCase()}`, 120, 72);
+
+        // --- 4. TABLA DE DISPOSITIVOS (DISEÑO LIMPIO) ---
+        const filas = data.dispositivos.map(d => [
+            d.id,
+            d.nombre,
+            { content: d.mantenimiento.toUpperCase(), styles: { fontStyle: 'bold' } }
+        ]);
+
+        doc.autoTable({
+            startY: 85,
+            head: [['ID', 'EQUIPO / DISPOSITIVO', 'MODALIDAD DE TRABAJO']],
+            body: filas,
+            theme: 'grid',
+            headStyles: {
+                fillColor: azulOscuro,
+                textColor: [255, 255, 255],
+                fontSize: 10,
+                halign: 'center'
+            },
+            styles: {
+                fontSize: 9,
+                cellPadding: 4
+            },
+            columnStyles: {
+                0: { cellWidth: 20, halign: 'center' },
+                2: { cellWidth: 50, halign: 'center' }
+            }
+        });
+
+        // --- 5. PIE DE PÁGINA Y FIRMAS ---
+        const finalY = doc.lastAutoTable.finalY + 35;
+
+        // Cuadros para firmas
+        doc.setDrawColor(200, 200, 200);
+        doc.line(30, finalY, 80, finalY);
+        doc.line(130, finalY, 180, finalY);
+
+        doc.setFontSize(8);
+        doc.setTextColor(...grisTexto);
+        doc.text("Firma del Administrador", 55, finalY + 5, { align: "center" });
+        doc.text("Firma de Recibido", 155, finalY + 5, { align: "center" });
+
+        doc.text(`Generado automáticamente por el Sistema de Gestión - ${new Date().getFullYear()}`, 105, 285, { align: "center" });
+
+        // --- 6. LANZAR DESCARGA ---
+        doc.save(`Reporte_Mantenimiento_${data.idOrden}.pdf`);
+
+    } catch (error) {
+        console.error("Fallo al generar PDF:", error);
+        alert("Error al procesar el reporte: " + error.message);
+    }
+};
