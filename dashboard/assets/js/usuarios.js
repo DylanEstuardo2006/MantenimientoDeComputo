@@ -237,7 +237,7 @@ window.prepararEliminacionUsuarios = function (id, nombre) {
 }
 
 /* ======================================================
-   CONFIRMAR BORRADO
+  ! CONFIRMAR BORRADO
 ====================================================== */
 
 function confirmarBorradoUsuarioFinal() {

@@ -41,9 +41,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         iconEl.innerText = "💻";
         osEl.innerText = "ChromeOS";
     }
-   // *  Llevanmos los elementos con el id y ponemos los núcleos lógicos y la Ram Aproximadamente 
-   // * NOTA: LA RAM NO ES EXACTA ES UN APROXIMADO 
-   
+    // *  Llevanmos los elementos con el id y ponemos los núcleos lógicos y la Ram Aproximadamente 
+    // * NOTA: LA RAM NO ES EXACTA ES UN APROXIMADO 
+
     document.getElementById('cpu-info').innerText = (navigator.hardwareConcurrency || "N/A") + " Núcleos Lógicos";
     document.getElementById('ram-info').innerText = (navigator.deviceMemory || "N/A") + " GB aprox.";
 

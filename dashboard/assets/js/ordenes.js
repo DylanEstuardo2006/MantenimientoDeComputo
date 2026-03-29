@@ -11,6 +11,7 @@ const urlApiOrdenesDetails = "https://pratica-5b-node-s1hu.vercel.app/api";
 
 let todoSeleccionado = false;
 
+let idOrdenADescargar = null;
 function obtenerHeaders() {
     const token = localStorage.getItem("token");
 
@@ -29,6 +30,13 @@ function inicializarModuloOrdenes(ruta) {
 
     if (rutaLimpia.includes('ordenes.html')) {
         cargarOrdenes();
+
+
+        const btnBorrar = document.getElementById("btnConfirmarDescargar");
+
+        if (btnBorrar) {
+            btnBorrar.onclick = confirmarDescargaOrden;
+        }
     }
 
 }
@@ -122,55 +130,92 @@ window.verDetalle = async function (id) {
 }
 
 function renderDetalle(orden) {
-
     const cont = document.getElementById("detalleOrden");
-
     const estadoClase = `estado-${orden.estado}`;
+
+    // VALIDACIÓN: ¿Ya tiene insumos registrados? (aunque siga en espera)
+    const tieneInsumos = orden.insumos && orden.insumos !== 'Sin especificar' && orden.horasHombre > 0;
 
     cont.innerHTML = `
     <div class="d-flex justify-content-between align-items-center">
-    <h4>Orden #${orden.idOrden}</h4>
-    <span class="estado-badge ${estadoClase}">
-        ${orden.estado}
-    </span>
+        <h4>Orden #${orden.idOrden}</h4>
+        <span class="estado-badge ${estadoClase}">${orden.estado.toUpperCase()}</span>
     </div>
-
     <hr>
-
+    
     <div class="row mb-3">
-    <div class="col-md-6">
-    <p><b>Administrador:</b><br>${orden.usuario}</p>
-    </div>
-    <div class="col-md-6">
-    <p><b>Laboratorio:</b><br>${orden.laboratorio}</p>
-    </div>
+        <div class="col-md-6">
+            <p class="mb-1 text-muted small">ADMINISTRADOR: <b>${orden.usuario}</b></p>
+            <p class="mb-1 text-muted small">LABORATORIO: <b>${orden.laboratorio}</b></p>
+        </div>
+        <div class="col-md-6 text-end">
+            <p class="mb-0"><b>Insumos:</b> ${orden.insumos || 'Pendiente'}</p>
+            <p class="mb-0"><b>Horas:</b> ${orden.horasHombre || 0} hrs</p>
+        </div>
     </div>
 
-    <h5>Dispositivos</h5>
+    <div class="d-grid gap-2 mt-3">
+        <button class="btn btn-primary" onclick="abrirModalFinalizar(${orden.idOrden})">
+            <i class="bi bi-pencil-fill"></i> Registrar Insumos y Horas
+        </button>
 
+        ${tieneInsumos 
+            ? `<button class="btn btn-outline-danger" onclick="prepararDescargaOrden(${orden.idOrden},'${orden.usuario}')">
+                <i class="bi bi-file-earmark-pdf"></i> Descargar para Firma
+               </button>`
+            : `<button class="btn btn-light text-muted border" disabled>
+                <i class="bi bi-lock"></i> PDF Bloqueado (Faltan Insumos)
+               </button>`
+        }
+        <h5>Equipos en mantenimiento</h5>
     <div class="list-group mb-3">
-    ${orden.dispositivos.map(d => `
-        <div class="list-group-item d-flex justify-content-between">
-        <span>${d.nombre}</span>
-        <span class="badge bg-secondary">${d.mantenimiento}</span>
-    </div>
-    `).join("")}
+        ${orden.dispositivos.map(d => `
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <span>${d.nombre}</span>
+                <span class="badge bg-secondary">${d.mantenimiento}</span>
+            </div>
+        `).join("")}
     </div>
 
-    <button class="btn btn-outline-danger w-100"
-    onclick="descargarPDF(${orden.idOrden})">
-    Descargar PDF
-    </button>
+        ${tieneInsumos && orden.estado === 'espera' ? `
+            <button class="btn btn-success" onclick="cambiarEstadoAceptado(${orden.idOrden})">
+                <i class="bi bi-check-all"></i> Marcar como Aceptada
+            </button>
+        ` : ''}
+    </div>
     `;
 }
+
+/* ========================================
+ ! PREPARAR DESCARGA PDF 
+=========================================== */
+
+window.prepararDescargaOrden = function (id, nombre) {
+
+    idOrdenADescargar = id;
+
+    const nombreElemento = document.getElementById("nombreCreadorOrden")
+
+    if (nombreElemento) {
+        nombreElemento.innerHTML = nombre;
+    }
+
+    const miModal = new bootstrap.Modal(
+        document.getElementById("modalDescargarOrden")
+    );
+
+    miModal.show();
+}
+
 window.abrirModalCrearOrden = function () {
     const modal = new bootstrap.Modal(document.getElementById("modalCrearOrden"));
     modal.show();
 
     cargarLaboratorios();
 }
+
 /* =========================
-   CARGAR LABORATORIOS
+   ! CARGAR LABORATORIOS
 ============================ */
 async function cargarLaboratorios() {
     try {
@@ -191,7 +236,7 @@ async function cargarLaboratorios() {
 }
 
 /* =========================
-   CARGAR DISPOSITIVOS (POR LABORATORIO)
+  ! CARGAR DISPOSITIVOS (POR LABORATORIO)
 ============================ */
 document.addEventListener("change", async (e) => {
     if (e.target.id === "labSelect") {
@@ -311,105 +356,128 @@ window.crearOrden = async function () {
     }
 };
 
-window.descargarPDF = async function (idOrden) {
+// ! Función para abrir el modal de actualización
+window.abrirModalFinalizar = function (id) {
+    // Guardamos el ID en el input oculto que pusimos en el HTML
+    document.getElementById("idOrdenFinalizar").value = id;
+
+    // Limpiamos los inputs por si acaso
+    document.getElementById("inputInsumos").value = "";
+    document.getElementById("inputHoras").value = "";
+
+    // Mostramos el modal
+    const modal = new bootstrap.Modal(document.getElementById("modalFinalizarOrden"));
+    modal.show();
+}
+// ! Función que conecta con el Backend
+window.guardarDatosFinales = async function () {
+    const id = document.getElementById("idOrdenFinalizar").value;
+    const insumos = document.getElementById("inputInsumos").value;
+    const horas = document.getElementById("inputHoras").value;
+
+    if (!insumos || !horas) return alert("Por favor completa los datos de insumos y horas.");
+
     try {
-        const res = await fetch(`https://pratica-5b-node-s1hu.vercel.app/api/ordenTrabajo/${idOrden}/pdf`, {
-            headers: obtenerHeaders()
+        const res = await fetch(`${urlApiOrdenes}/ordenes/${id}`, {
+            method: "PUT",
+            headers: obtenerHeaders(),
+            body: JSON.stringify({
+                estado: 'realizado',
+                insumos: insumos,
+                horasHombre: parseInt(horas)
+            })
         });
+
+        if (res.ok) {
+            alert("Orden actualizada y finalizada correctamente ✅");
+            bootstrap.Modal.getInstance(document.getElementById("modalFinalizarOrden")).hide();
+            cargarOrdenes(); // Recargamos la lista
+            verDetalle(id);  // Refrescamos el detalle
+        } else {
+            throw new Error("Error al actualizar en el servidor");
+        }
+    } catch (error) {
+        console.error(error);
+        alert("Fallo al guardar: " + error.message);
+    }
+}
+const confirmarDescargaOrden = async () => {
+    if (!idOrdenADescargar) return;
+    try {
+        const res = await fetch(`${urlApiOrdenesDetails}/ordenTrabajo/${idOrdenADescargar}/pdf`, { headers: obtenerHeaders() });
         const data = await res.json();
+
+        // Validar insumos antes de generar
+        if (!data.insumos || data.insumos === 'Sin especificar' || data.horasHombre <= 0) {
+            return alert("La orden debe tener insumos y horas para generar el reporte.");
+        }
 
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
+        const azulP = [28, 40, 51], azulD = [52, 152, 219];
 
-        // --- 1. CONFIGURACIÓN DE COLORES Y FUENTES ---
-        const azulOscuro = [44, 62, 80];
-        const azulClaro = [52, 152, 219];
-        const grisTexto = [100, 100, 100];
+        // Logos y Encabezado
+        doc.addImage("../img/logoCarrera.png", 'PNG', 15, 8, 22, 22);
+        doc.addImage("../img/logoUthh.png", 'PNG', 173, 8, 22, 22);
 
-        // --- 2. ENCABEZADO CON ESTILO ---
-        // Rectángulo decorativo superior
-        doc.setFillColor(...azulOscuro);
-        doc.rect(0, 0, 210, 40, 'F');
-
+        doc.setFillColor(...azulP);
+        doc.rect(0, 35, 210, 15, 'F');
         doc.setTextColor(255, 255, 255);
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(22);
-        doc.text("REPORTE TÉCNICO", 20, 20);
+        doc.setFontSize(14);
+        doc.text("REPORTE TÉCNICO DE MANTENIMIENTO", 20, 44);
+        doc.setFontSize(9);
+        doc.text(`FOLIO: #00${data.idOrden}`, 190, 44, { align: "right" });
 
-        doc.setFontSize(10);
-        doc.setFont("helvetica", "normal");
-        doc.text("SISTEMA DE MANTENIMIENTO DE EQUIPOS", 20, 28);
-        doc.text(`ORDEN DE TRABAJO #${data.idOrden}`, 190, 20, { align: "right" });
-
-        // --- 3. BLOQUE DE INFORMACIÓN (TARJETA) ---
+        // Cuerpo del PDF
         doc.setTextColor(0, 0, 0);
         doc.setFontSize(11);
-        doc.setFont("helvetica", "bold");
-        doc.text("DETALLES DE LA ORDEN", 20, 55);
+        doc.text("INFORMACIÓN TÉCNICA", 20, 60);
+        doc.setDrawColor(...azulD);
+        doc.line(20, 62, 190, 62);
 
-        // Línea divisoria
-        doc.setDrawColor(...azulClaro);
-        doc.setLineWidth(0.5);
-        doc.line(20, 57, 190, 57);
-
-        doc.setFont("helvetica", "normal");
         doc.setFontSize(10);
-        // Columna Izquierda
-        doc.text(`Técnico Responsable: ${data.usuario}`, 25, 65);
-        doc.text(`Laboratorio: ${data.laboratorio}`, 25, 72);
-        // Columna Derecha
-        const fechaFormateada = new Date(data.fecha).toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
-        doc.text(`Fecha Emisión: ${fechaFormateada}`, 120, 65);
-        doc.text(`Estado: ${data.estado.toUpperCase()}`, 120, 72);
-
-        // --- 4. TABLA DE DISPOSITIVOS (DISEÑO LIMPIO) ---
-        const filas = data.dispositivos.map(d => [
-            d.id,
-            d.nombre,
-            { content: d.mantenimiento.toUpperCase(), styles: { fontStyle: 'bold' } }
-        ]);
+        doc.text(`Técnico: ${data.usuario}`, 25, 70);
+        doc.text(`Laboratorio: ${data.laboratorio}`, 25, 77);
+        doc.text(`Insumos: ${data.insumos}`, 25, 84);
+        doc.text(`Tiempo Invertido: ${data.horasHombre} horas`, 120, 84);
 
         doc.autoTable({
-            startY: 85,
-            head: [['ID', 'EQUIPO / DISPOSITIVO', 'MODALIDAD DE TRABAJO']],
-            body: filas,
-            theme: 'grid',
-            headStyles: {
-                fillColor: azulOscuro,
-                textColor: [255, 255, 255],
-                fontSize: 10,
-                halign: 'center'
-            },
-            styles: {
-                fontSize: 9,
-                cellPadding: 4
-            },
-            columnStyles: {
-                0: { cellWidth: 20, halign: 'center' },
-                2: { cellWidth: 50, halign: 'center' }
-            }
+            startY: 95,
+            head: [['ID', 'EQUIPO', 'MANTENIMIENTO']],
+            body: data.dispositivos.map(d => [d.id, d.nombre, d.mantenimiento.toUpperCase()]),
+            theme: 'striped',
+            headStyles: { fillColor: azulP }
         });
 
-        // --- 5. PIE DE PÁGINA Y FIRMAS ---
-        const finalY = doc.lastAutoTable.finalY + 35;
-
-        // Cuadros para firmas
-        doc.setDrawColor(200, 200, 200);
-        doc.line(30, finalY, 80, finalY);
-        doc.line(130, finalY, 180, finalY);
-
+        const finalY = doc.lastAutoTable.finalY + 30;
+        doc.line(35, finalY, 85, finalY);
+        doc.line(125, finalY, 175, finalY);
         doc.setFontSize(8);
-        doc.setTextColor(...grisTexto);
-        doc.text("Firma del Administrador", 55, finalY + 5, { align: "center" });
-        doc.text("Firma de Recibido", 155, finalY + 5, { align: "center" });
+        doc.text("FIRMA RESPONSABLE", 60, finalY + 5, { align: "center" });
+        doc.text("FIRMA CONFORMIDAD", 150, finalY + 5, { align: "center" });
 
-        doc.text(`Generado automáticamente por el Sistema de Gestión - ${new Date().getFullYear()}`, 105, 285, { align: "center" });
-
-        // --- 6. LANZAR DESCARGA ---
-        doc.save(`Reporte_Mantenimiento_${data.idOrden}.pdf`);
-
-    } catch (error) {
-        console.error("Fallo al generar PDF:", error);
-        alert("Error al procesar el reporte: " + error.message);
-    }
+        doc.save(`Reporte_OT_${data.idOrden}.pdf`);
+        bootstrap.Modal.getInstance(document.getElementById("modalDescargarOrden")).hide();
+    } catch (error) { alert("Error al procesar el reporte."); }
 };
+
+window.cambiarEstadoAceptado = async function (id) {
+    if (!confirm("¿Confirmas que ya tienes la firma y deseas marcar la orden como ACEPTADA?")) return;
+    try {
+        const res = await fetch(`https://pratica-5b-node-s1hu.vercel.app/api/ordenTrabajo/${id}/estado`, {
+            method: "PATCH",
+            headers: obtenerHeaders(),
+            body: JSON.stringify({
+                estado: 'aceptado' // O el nombre exacto que use tu backend (ej: 'aceptado')
+            })
+        });
+
+        if (res.ok) {
+            alert("Orden finalizada y aceptada con éxito ✅");
+            cargarOrdenes(); // Recarga la lista de la izquierda
+            verDetalle(id);  // Refresca el panel de la derecha
+        }
+    } catch (error) {
+        alert("Error al cambiar el estado");
+    }
+}
