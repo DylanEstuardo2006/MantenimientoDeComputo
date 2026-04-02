@@ -96,31 +96,41 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="modalFinalizarOrden" tabindex="-1">
+<div class="modal fade" id="modalFinalizarOrden" tabindex="-1" aria-labelledby="modalInsumosLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-success text-white">
-                <h5 class="modal-title">Finalizar Orden de Trabajo</h5>
-                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalInsumosLabel">
+                    <i class="bi bi-tools me-2"></i>Registrar Datos Técnicos
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-4">
                 <input type="hidden" id="idOrdenFinalizar">
+
                 <div class="mb-3">
-                    <label class="form-label">Insumos Utilizados</label>
-                    <textarea id="inputInsumos" class="form-control"
-                        placeholder="Ej: Pasta térmica, 2 conectores RJ45..."></textarea>
+                    <label class="form-label fw-bold text-secondary">Insumos Utilizados</label>
+                    <textarea id="inputInsumos" class="form-control border-primary" rows="3"
+                        placeholder="Ej: Pasta térmica Arctic MX-4, 2 conectores RJ45..."></textarea>
+                    <div class="form-text">Detalla todo el material gastado en este mantenimiento.</div>
                 </div>
+
                 <div class="mb-3">
-                    <label class="form-label">Horas Hombre invertidas</label>
-                    <input type="number" id="inputHoras" class="form-control" placeholder="0">
-                </div>
-                <div class="alert alert-info small">
-                    <i class="bi bi-info-circle"></i> Al finalizar, el estado cambiará a <b>"Realizado"</b>.
+                    <label class="form-label fw-bold text-secondary">Tiempo Invertido (Horas)</label>
+                    <div class="input-group">
+                        <input type="number" id="inputHoras" class="form-control border-primary" placeholder="0"
+                            min="1">
+                        <span class="input-group-text bg-light">hrs</span>
+                    </div>
+                    <div class="form-text">Solo números enteros.</div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <button class="btn btn-success" onclick="guardarDatosFinales()">Guardar y Finalizar</button>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary px-4" onclick="guardarDatosFinales()">
+                    <i class="bi bi-save me-1"></i> Guardar Cambios
+                </button>
             </div>
         </div>
     </div>

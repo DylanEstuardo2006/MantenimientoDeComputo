@@ -1,5 +1,5 @@
 /* ======================================================
-   CONFIGURACIÓN GENERAL
+    ? CONFIGURACIÓN GENERAL
 ====================================================== */
 if (!localStorage.getItem("token")) {
     window.location.replace("../login.html"); // .replace es mejor para que no puedan volver atrás
@@ -12,6 +12,7 @@ const urlApiOrdenesDetails = "https://pratica-5b-node-s1hu.vercel.app/api";
 let todoSeleccionado = false;
 
 let idOrdenADescargar = null;
+
 function obtenerHeaders() {
     const token = localStorage.getItem("token");
 
@@ -53,10 +54,11 @@ async function cargarOrdenes() {
 }
 
 window.toggleSeleccionarTodo = function () {
-    // Buscamos específicamente los checkboxes de los dispositivos
+
+    // ! Buscamos específicamente los checkboxes de los dispositivos
     const checks = document.querySelectorAll(".device-check");
 
-    if (checks.length === 0) return; // Si no hay dispositivos cargados, no hace nada
+    if (checks.length === 0) return; // ? Si no hay dispositivos cargados, no hace nada
 
     todoSeleccionado = !todoSeleccionado;
 
@@ -159,7 +161,7 @@ function renderDetalle(orden) {
             <i class="bi bi-pencil-fill"></i> Registrar Insumos y Horas
         </button>
 
-        ${tieneInsumos 
+        ${tieneInsumos
             ? `<button class="btn btn-outline-danger" onclick="prepararDescargaOrden(${orden.idOrden},'${orden.usuario}')">
                 <i class="bi bi-file-earmark-pdf"></i> Descargar para Firma
                </button>`
@@ -375,32 +377,32 @@ window.guardarDatosFinales = async function () {
     const insumos = document.getElementById("inputInsumos").value;
     const horas = document.getElementById("inputHoras").value;
 
-    if (!insumos || !horas) return alert("Por favor completa los datos de insumos y horas.");
+    if (!insumos || !horas) return alert("Por favor completa los datos.");
 
     try {
-        const res = await fetch(`${urlApiOrdenes}/ordenes/${id}`, {
-            method: "PUT",
+        // La URL debe terminar en /horasHombre según tu router
+        const res = await fetch(`${urlApiOrdenes}/ordenTrabajo/${id}/horasHombre`, {
+            method: "PATCH", // Tu router usa PATCH en la línea 17
             headers: obtenerHeaders(),
             body: JSON.stringify({
-                estado: 'realizado',
                 insumos: insumos,
                 horasHombre: parseInt(horas)
             })
         });
 
         if (res.ok) {
-            alert("Orden actualizada y finalizada correctamente ✅");
+            alert("Insumos registrados correctamente ✅");
             bootstrap.Modal.getInstance(document.getElementById("modalFinalizarOrden")).hide();
-            cargarOrdenes(); // Recargamos la lista
-            verDetalle(id);  // Refrescamos el detalle
+            cargarOrdenes();
+            verDetalle(id);
         } else {
-            throw new Error("Error al actualizar en el servidor");
+            alert("Error al guardar. Revisa que el token no haya expirado (403/500).");
         }
     } catch (error) {
-        console.error(error);
-        alert("Fallo al guardar: " + error.message);
+        alert("Error de conexión");
     }
 }
+
 const confirmarDescargaOrden = async () => {
     if (!idOrdenADescargar) return;
     try {
@@ -462,22 +464,27 @@ const confirmarDescargaOrden = async () => {
 };
 
 window.cambiarEstadoAceptado = async function (id) {
-    if (!confirm("¿Confirmas que ya tienes la firma y deseas marcar la orden como ACEPTADA?")) return;
+
+    if (!confirm("¿Deseas marcar la orden como ACEPTADA?")) return;
+
     try {
-        const res = await fetch(`https://pratica-5b-node-s1hu.vercel.app/api/ordenTrabajo/${id}/estado`, {
-            method: "PATCH",
+        // La URL debe terminar en /estado según tu router
+        const res = await fetch(`${urlApiOrdenes}/ordenTrabajo/${id}/estado`, {
+            method: "PATCH", // Tu router usa PATCH en la línea 17  
             headers: obtenerHeaders(),
             body: JSON.stringify({
-                estado: 'aceptado' // O el nombre exacto que use tu backend (ej: 'aceptado')
+                estado: 'aceptado' // Verifica si tu DB espera 'aceptado' o 'realizado'
             })
         });
 
         if (res.ok) {
-            alert("Orden finalizada y aceptada con éxito ✅");
-            cargarOrdenes(); // Recarga la lista de la izquierda
-            verDetalle(id);  // Refresca el panel de la derecha
+            alert("Estado actualizado a ACEPTADO ✅");
+            cargarOrdenes();
+            verDetalle(id);
+        } else {
+            alert("No se pudo actualizar el estado. Revisa los permisos.");
         }
     } catch (error) {
-        alert("Error al cambiar el estado");
+        alert("Error al conectar con el servidor.");
     }
 }
