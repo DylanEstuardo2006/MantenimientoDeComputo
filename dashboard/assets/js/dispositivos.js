@@ -41,7 +41,7 @@ function obtenerHeaders() {
 ====================================================== */
 
 function inicializarModuloDispositivos(ruta) {
-  
+
 
     const rutaLimpia = ruta.toLowerCase();
 
@@ -115,7 +115,7 @@ function renderizarSelectTipoDispositivo(idSelect, idTipoDispositivoSelect = nul
         .then(res => res.json())
 
         .then(tipoDispositivo => {
-           
+
             select.innerHTML = `<option disabled selected> Selecciones un Tipo de Dispositivo..... </option>`;
 
             tipoDispositivo.forEach(tipo => {
@@ -154,7 +154,7 @@ function renderizarSelectLaboratorios(idSelect, idLaboratorioSeleccionado) {
         .then(res => res.json())
 
         .then(laboratorios => {
-           
+
             select.innerHTML = `<option disabled selected>Seleeciona un laboratorio... </option>`;
 
             laboratorios.forEach(lab => {
@@ -187,7 +187,7 @@ function renderizarSelectModelos(idSelect, idModeloSeleccionado = null) {
     fetch(urlApiModelosSelect, { headers: obtenerHeaders() })
         .then(res => res.json())
         .then(modelos => {
-           
+
 
             select.innerHTML = `<option disabled selected>Seleccione un modelo...</option>`;
 
@@ -467,8 +467,17 @@ function guardarNuevoDispositivo() {
     const idTipoDispositivo = parseInt(document.getElementById("selectTipoDispositivo").value);
     const idModelo = parseInt(document.getElementById("selectModelos").value);
 
-    if (!nombreDispositivo) {
-        alert("❌ El nombre no puede estar vacio");
+
+    if (nombreDispositivo === "") {
+        alert("❌ El nombre del dispositivo no puede estar vacío.");
+        return;
+    }
+    // Estos son los caracteres que quieres prohibir
+    const caracteresProhibidos = /[ ,()\-}[\]+´’¿|#$%&/^]/;
+
+    // .test() es más limpio para validaciones booleanas que .exec()
+    if (caracteresProhibidos.test(nombreDispositivo)) {
+        alert("❌ El nombre del dispositivo contiene caracteres no permitidos.");
         return;
     }
 
