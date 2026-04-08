@@ -5,7 +5,7 @@
         <small class="text-muted">Gestión de mantenimientos</small>
     </div>
 
-    <button class="btn btn-primary" onclick="abrirModalCrearOrden()">
+    <button id="btn-crear-orden"class="btn btn-primary" onclick="abrirModalCrearOrden()">
         <i class="bi bi-plus-lg"></i> Nueva Orden
     </button>
 
@@ -39,6 +39,9 @@
     </div>
 
 </div>
+
+<!---- Modal Crear Orden ---->
+
 <div class="modal fade" id="modalCrearOrden" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -58,7 +61,7 @@
                 <div class="mb-3">
                     <div class="mb-2 d-flex justify-content-between align-items-center">
                         <small class="text-muted">Selecciona los equipos y su tipo de mantenimiento</small>
-                        <button class="btn btn-sm btn-outline-primary" onclick="toggleSeleccionarTodo()">
+                        <button id="btn-seleccionar-todos"class="btn btn-sm btn-outline-primary" onclick="toggleSeleccionarTodo()">
                             Seleccionar todos
                         </button>
                     </div>
@@ -75,6 +78,8 @@
         </div>
     </div>
 </div>
+
+<!---  Modal descargar Orden -->
 <div class="modal fade" id="modalDescargarOrden" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
@@ -96,6 +101,8 @@
         </div>
     </div>
 </div>
+
+<
 <div class="modal fade" id="modalFinalizarOrden" tabindex="-1" aria-labelledby="modalInsumosLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content border-0 shadow">
