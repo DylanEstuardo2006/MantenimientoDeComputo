@@ -1,4 +1,10 @@
- <div class="container py-4">
+<script>
+    if (!localStorage.getItem("token")) {
+        // Si intentan entrar directo sin token, al login
+        window.location.replace("../../login.html");
+    }
+</script>
+<div class="container py-4">
                     <header class="pb-3 mb-4 border-bottom">
                         <div class="d-flex align-items-center p-3">
                             <!-- Logo (reemplazar src con la ruta de tu logo) -->

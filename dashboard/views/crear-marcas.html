@@ -1,3 +1,9 @@
+<script>
+    if (!localStorage.getItem("token")) {
+        // Si intentan entrar directo sin token, al login
+        window.location.replace("../../login.html");
+    }
+</script>
 <div class="card border-0 shadow-sm rounded-4">
     <div class="card-header bg-primary bg-primary text-white py-3 px-4">
         <h5 class="mb-0 fw-bold">
