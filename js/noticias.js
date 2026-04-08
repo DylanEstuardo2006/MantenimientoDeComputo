@@ -52,7 +52,7 @@ function mostrarNoticias(listaNoticias) {
     });
     container.innerHTML = html;
 
-   
+
 }
 
 // Función para mostrar la info completa en el modal
@@ -71,18 +71,18 @@ window.verDetalles = function (id) {
         };
 
         modalBody.innerHTML = `
-            <div class="mb-4 rounded-3 overflow-hidden shadow-sm" style="height: 300px;">
-                <img src="${noticia.imagen}" class="w-100 h-100 object-fit-cover">
-            </div>
-            <div class="text-center mb-4">
-                <h2 class="fw-bold">${limpiarTexto(noticia.tituloNovedad)}</h2>
-            </div>
-            <div class="p-4 bg-light rounded-3 border-start border-primary border-4">
-                <p class="mb-0 text-dark" style="white-space: pre-line;">
-                    ${limpiarTexto(noticia.informacion)}
-                </p>
-            </div>
-        `;
+    <div class="mb-4 rounded-3 overflow-hidden shadow-sm">
+        <img src="${noticia.imagen}" class="w-100 img-fluid" style="max-height: 500px; object-fit: contain; background-color: #f8f9fa;">
+    </div>
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">${limpiarTexto(noticia.tituloNovedad)}</h2>
+    </div>
+    <div class="p-4 bg-light rounded-3 border-start border-primary border-4">
+        <p class="mb-0 text-dark" style="white-space: pre-line;">
+            ${limpiarTexto(noticia.informacion)}
+        </p>
+    </div>
+`;
     }
 };
 document.addEventListener("DOMContentLoaded", cargarNoticias);
