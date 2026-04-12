@@ -21,6 +21,7 @@ const urlApiTipoDispositivo = "https://pratica-5b-node-s1hu.vercel.app/api/tipo_
 // ? URL de la API de Modelos 
 const urlApiModelosSelect = "https://pratica-5b-node-s1hu.vercel.app/api/modelos";
 
+
 let idDispositivoABorrar = null;
 
 /**  =======================================
@@ -227,12 +228,18 @@ function listarDispositivos() {
             data.forEach(dispositivo => {
                 html += `
                 <tr>
-                   <td>${dispositivo.idDispositivo}</td>
+                   
                    <td>${dispositivo.nombreDispositivo}</td>
                    <td>${dispositivo.numeroInventario}</td>
                    <td>${dispositivo.nombreModelo}</td>
                    <td>${dispositivo.nombreLaboratorio}</td>
                    <td>${dispositivo.tipoDispositivo}</td>
+                   <td class="text-center">
+                    <button id="btn-actualizar-dispositivo" class="btn btn-sm btn-outline-success me-2"
+                        onclick="verPrediccion(${dispositivo.idDispositivo})">
+                        <i class="bi-bar-chart-fill"></i>
+                        </button>
+                   </td>
                    <td class="text-center">
 
                         <button id="btn-actualizar-dispositivo" class="btn btn-sm btn-outline-warning me-2"
@@ -544,4 +551,56 @@ function guardarNuevoDispositivo() {
 
         });
 
+}
+
+/* =========================================
+ ? MODAL DE GRAFICA DE PREDICCIÓN DE FALLO
+    =======================================
+*/
+let miGrafica; // Variable global para poder destruir la gráfica anterior
+
+async function verPrediccion(id) {
+    const response = await fetch(`https://pratica-5b-node-s1hu.vercel.app/api/ecuaciones/prediccion/${id}`);
+    const res = await response.json();
+
+    if (res.ok) {
+        const data = res.data;
+
+        // 1. Llenar los textos
+        document.getElementById('diasFallo').innerText = data.prediccion.dias_para_fallo + " días";
+        document.getElementById('valorK').innerText = Number(data.decremento_k).toFixed(5);
+document.getElementById('nombreEquipoModal').innerText = data.equipo || "Dispositivo #" + id;
+        // 2. Generar puntos para la curva P = P0 * e^(kt)
+        const puntosY = [];
+        const labels = [];
+        for (let t = 0; t <= 5; t += 0.5) { // Proyección a 5 meses
+            const p = 100 * Math.exp(data.decremento_k * t);
+            puntosY.push(p.toFixed(2));
+            labels.push(`Mes ${t}`);
+        }
+
+        // 3. Dibujar/Actualizar Gráfica
+        const ctx = document.getElementById('graficaPrediccion').getContext('2d');
+        if (miGrafica) miGrafica.destroy(); // Limpiar si ya había una
+
+        miGrafica = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Curva de Rendimiento (%)',
+                    data: puntosY,
+                    borderColor: '#198754',
+                    tension: 0.3,
+                    fill: true,
+                    backgroundColor: 'rgba(25, 135, 84, 0.1)'
+                }]
+            }
+        });
+
+        // Abrir el modal
+        new bootstrap.Modal(document.getElementById('modalPrediccion')).show();
+    } else {
+        alert("Este equipo aún no tiene suficientes registros (mínimo 2).");
+    }
 }
