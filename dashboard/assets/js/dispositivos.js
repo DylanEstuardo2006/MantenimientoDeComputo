@@ -616,22 +616,26 @@ async function cargarPrioridades() {
         contenedor.innerHTML = ''; // Limpiar
 
         laboratorios.forEach(lab => {
+            const promedio = parseFloat(lab.promedio_rendimiento);
             // Lógica de colores según el promedio
             let colorCard = "bg-success";
             if (lab.promedio_rendimiento < 75) colorCard = "bg-warning text-dark";
             if (lab.promedio_rendimiento < 50) colorCard = "bg-danger text-white";
 
             contenedor.innerHTML += `
-    <div class="col-12 col-sm-6 col-lg-3 mb-3">
-        <div class="card ${colorCard} shadow h-100"> 
-            <div class="card-body text-center d-flex flex-column justify-content-center">
-                <h5 class="card-title">Lab ${lab.nombreLaboratorio}</h5>
-                <h2 class="fw-bold">${promedio}%</h2>
-                <p class="card-text">Equipos: ${lab.total_equipos}</p>
+        <div class="col-12 col-md-6 col-lg-3"> 
+            <div class="card ${colorCard} shadow border-0 h-100">
+                <div class="card-body text-center p-4">
+                    <h6 class="text-uppercase opacity-75 small">Laboratorio ${lab.nombreLaboratorio}</h6>
+                    <h2 class="display-6 fw-bold m-0">${promedio}%</h2>
+                    <hr class="opacity-25">
+                    <p class="card-text small mb-0">
+                        <i class="bi bi-exclamation-triangle"></i> Equipos Críticos: ${lab.equipos_criticos}
+                    </p>
+                </div>
             </div>
         </div>
-    </div>
-`;
+    `;
         });
     }
 }
