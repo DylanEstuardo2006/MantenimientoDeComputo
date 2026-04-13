@@ -56,6 +56,8 @@ function inicializarModuloDispositivos(ruta) {
 
         configurarBuscadorDispositivos();
 
+        cargarPrioridades();
+
         const btnBorrar = document.getElementById("btnConfirmarBorrado");
 
         if (btnBorrar) {
@@ -569,7 +571,7 @@ async function verPrediccion(id) {
         // 1. Llenar los textos
         document.getElementById('diasFallo').innerText = data.prediccion.dias_para_fallo + " días";
         document.getElementById('valorK').innerText = Number(data.decremento_k).toFixed(5);
-document.getElementById('nombreEquipoModal').innerText = data.equipo || "Dispositivo #" + id;
+        document.getElementById('nombreEquipoModal').innerText = data.equipo || "Dispositivo #" + id;
         // 2. Generar puntos para la curva P = P0 * e^(kt)
         const puntosY = [];
         const labels = [];
@@ -602,5 +604,34 @@ document.getElementById('nombreEquipoModal').innerText = data.equipo || "Disposi
         new bootstrap.Modal(document.getElementById('modalPrediccion')).show();
     } else {
         alert("Este equipo aún no tiene suficientes registros (mínimo 2).");
+    }
+}
+async function cargarPrioridades() {
+    const response = await fetch('https://pratica-5b-node-s1hu.vercel.app/api/ecuaciones/estado-mantenimiento');
+    const res = await response.json();
+
+    if (res.ok) {
+        const laboratorios = res.data;
+        const contenedor = document.getElementById('contenedor-prioridad');
+        contenedor.innerHTML = ''; // Limpiar
+
+        laboratorios.forEach(lab => {
+            // Lógica de colores según el promedio
+            let colorCard = "bg-success";
+            if (lab.promedio_rendimiento < 75) colorCard = "bg-warning text-dark";
+            if (lab.promedio_rendimiento < 50) colorCard = "bg-danger text-white";
+
+            contenedor.innerHTML += `
+                <div class="col-md-3">
+                    <div class="card ${colorCard} shadow-sm">
+                        <div class="card-body text-center">
+                            <h6 class="card-title">Laboratorio ${lab.nombreLaboratorio}</h6>
+                            <h4 class="fw-bold">${lab.promedio_rendimiento}%</h4>
+                            <small>Equipos Críticos: ${lab.equipos_criticos}</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
     }
 }
