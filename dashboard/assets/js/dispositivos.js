@@ -622,16 +622,16 @@ async function cargarPrioridades() {
             if (lab.promedio_rendimiento < 50) colorCard = "bg-danger text-white";
 
             contenedor.innerHTML += `
-                <div class="col-md-3">
-                    <div class="card ${colorCard} shadow-sm">
-                        <div class="card-body text-center">
-                            <h6 class="card-title">Laboratorio ${lab.nombreLaboratorio}</h6>
-                            <h4 class="fw-bold">${lab.promedio_rendimiento}%</h4>
-                            <small>Equipos Críticos: ${lab.equipos_criticos}</small>
-                        </div>
-                    </div>
-                </div>
-            `;
+    <div class="col-12 col-sm-6 col-lg-3 mb-3">
+        <div class="card ${colorCard} shadow h-100"> 
+            <div class="card-body text-center d-flex flex-column justify-content-center">
+                <h5 class="card-title">Lab ${lab.nombreLaboratorio}</h5>
+                <h2 class="fw-bold">${promedio}%</h2>
+                <p class="card-text">Equipos: ${lab.total_equipos}</p>
+            </div>
+        </div>
+    </div>
+`;
         });
     }
 }
