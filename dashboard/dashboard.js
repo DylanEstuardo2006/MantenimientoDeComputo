@@ -2,10 +2,6 @@
   * ? SEGURIDAD: VERIFICACIÓN DE ACCESO
   * ? Se ejecuta antes de cualquier otra cosa para evitar accesos no autorizados.
    ========================================================================== */
-if (!localStorage.getItem("token")) {
-    window.location.replace("../login.html"); // .replace es mejor para que no puedan volver atrás
-}
-
 /** 
  * * inicializarDashboard
  * * Configura la vista inicial y los permisos de la interfaz según el rol del usuario.
@@ -54,9 +50,9 @@ function inicializarDashboard() {
             displayNombre.textContent = "Sin sesión";
         }
     }
-    
+
     // ! AJUSTE: Usamos .rol en lugar de .idRol porque así viene del servidor
-    
+
     const rolTexto = usuarioGlobal.rol === 1 ? "Administrador" : "Técnico";
     const displayRol = document.getElementById("rol-usuario-header");
 
@@ -235,11 +231,10 @@ function confirmarCerrarSession() {
 
     const modalElement = document.getElementById("modalCerrarSession");
     const modalInstance = bootstrap.Modal.getInstance(modalElement);
-
-    if (modalInstance) {
-        modalInstance.hide();
-    }
-    window.location.replace("../login.html");
+    if (modalInstance)  modalInstance.hide();
+    
+    // Llamamos a la función maestra
+    cerrarSesionGlobal();
 
 }
 // Al cargar la página, arrancamos la lógica

@@ -1,25 +1,12 @@
 // ============================================================
 //  marcas.js  –  CRUD completo para el módulo de Marcas
 // ============================================================
-if (!localStorage.getItem("token")) {
-    window.location.replace("../login.html"); // .replace es mejor para que no puedan volver atrás
-}
 
 const urlMarcas = 'https://pratica-5b-node-s1hu.vercel.app/api/marcas';
 
 // Variables de estado del módulo
 let idMarcaABorrar = null;
 let idMarcaAEditar = null;
-
-function obtenerHeaders() {
-
-    const token = localStorage.getItem("token");
-
-    return {
-        "Content-Type": "application/json",
-        "Authorization": token ? `Bearer ${token}` : ""
-    };
-}
 
 // ─────────────────────────────────────────────
 //  INICIALIZADOR  (llamado desde el router)

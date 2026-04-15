@@ -1,8 +1,8 @@
-const urlApiNoticias = 'https://pratica-5b-node-s1hu.vercel.app/api/novedades';
+
 let noticias = []; // Variable global para guardar los datos
 
 function cargarNoticias() {
-    fetch(urlApiNoticias)
+    fetch(urlApi + 'novedades')
         .then(res => res.json())
         .then(data => {
             if (!data) return;

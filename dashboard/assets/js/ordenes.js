@@ -1,9 +1,7 @@
 /* ======================================================
     ? CONFIGURACIÓN GENERAL
 ====================================================== */
-if (!localStorage.getItem("token")) {
-    window.location.replace("../login.html"); // .replace es mejor para que no puedan volver atrás
-}
+
 
 const urlApiOrdenes = "https://pratica-5b-node-s1hu.vercel.app/api";
 
@@ -13,14 +11,7 @@ let todoSeleccionado = false;
 
 let idOrdenADescargar = null;
 
-function obtenerHeaders() {
-    const token = localStorage.getItem("token");
 
-    return {
-        "Content-Type": "application/json",
-        "Authorization": token ? `Bearer ${token}` : ""
-    }
-}
 
 function inicializarModuloOrdenes(ruta) {
     const rutaLimpia = ruta.toLowerCase();

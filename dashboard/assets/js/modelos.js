@@ -1,9 +1,6 @@
 /* ======================================================
    CONFIGURACIÓN GENERAL DEL MÓDULO
 ====================================================== */
-if (!localStorage.getItem("token")) {
-    window.location.replace("../login.html"); // .replace es mejor para que no puedan volver atrás
-}
 
 // URL de la API de modelos
 const urlApiModelos = "https://pratica-5b-node-s1hu.vercel.app/api/modelos";
@@ -13,20 +10,6 @@ const urlApiMarcas = "https://pratica-5b-node-s1hu.vercel.app/api/marcas";
 
 // Variable global para guardar el ID del modelo que se quiere eliminar
 let idModeloABorrar = null;
-
-
-// ==========================================
-// FUNCION PARA OBTENER HEADERS DE LAS PETICIONES
-// ==========================================
-function obtenerHeaders() {
-
-    const token = localStorage.getItem("token");
-    return {
-        "Content-Type": "application/json",
-        "Authorization": token ? `Bearer ${token}` : ""
-    };
-}
-
 
 /* ======================================================
    FUNCIÓN PRINCIPAL DEL MÓDULO
