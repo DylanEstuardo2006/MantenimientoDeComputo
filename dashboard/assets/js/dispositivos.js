@@ -554,6 +554,7 @@ async function verPrediccion(id) {
         // 1. Llenar los textos
         document.getElementById('diasFallo').innerText = data.prediccion.dias_para_fallo + " días";
         document.getElementById('valorK').innerText = Number(data.decremento_k).toFixed(5);
+        document.getElementById('rendimiento5Meses').innerText = (100 * Math.exp(data.decremento_k * 5)).toFixed(2) + " %";
         document.getElementById('nombreEquipoModal').innerText = data.equipo || "Dispositivo #" + id;
         // 2. Generar puntos para la curva P = P0 * e^(kt)
         const puntosY = [];
