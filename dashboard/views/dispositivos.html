@@ -16,13 +16,12 @@
 <!---barra de búsqueda-->
 <div class="row mb-3">
     <div class="col-md-4">
-        <input type="text" id="inputBuscarDispositivo" class="form-control" placeholder="Buscar dispositivos...">
+        <input type="text" id="inputBuscarDispositivo" class="form-control"
+            placeholder="Buscar dispositivo por el número de inventario...">
     </div>
 </div>
 <div class="container mt-4">
     <h2 class="mb-3">Resumen de Prioridad por Laboratorio</h2>
-    <div class="row mb-4 g-3" id="contenedor-prioridad">
-    </div>
 </div>
 <!---Tabla de usuarios -->
 <div class="card admin-card p-3">
@@ -38,7 +37,7 @@
                     <th>Modelo</th>
                     <th>Laboratorio</th>
                     <th>Tipo Dispositivo</th>
-                    <th class="text-center">Rendimiento</th>
+                    <th class="text-center">Graficas</th>
                     <th class="text-center">Acciones</th>
                 </tr>
             </thead>
@@ -72,28 +71,33 @@
 <div class="modal fade" id="modalPrediccion" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-dark text-white">
                 <h5 class="modal-title">
-                    Análisis de: <span id="nombreEquipoModal" class="text-primary fw-bold"></span>
+                    Análisis Predictivo: <span id="nombreEquipoModal" class="text-info fw-bold"></span>
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <div class="row text-center mb-3">
-                    <div class="col-4">
-                        <h6>Días para mantenimiento:</h6>
-                        <h3 id="diasFallo" class="text-danger">--</h3>
+                <div class="row text-center mb-4">
+                    <div class="col-md-4">
+                        <h6 class="text-muted">Semana Límite (10 Mant.):</h6>
+                        <h3 id="res_semanas_limite" class="text-danger fw-bold">--</h3>
                     </div>
-                    <div class="col-4">
-                        <h6>Rendimiennto despues de 5 meses:</h6>
-                        <h3 id="rendimiento5Meses" class="text-danger">--</h3>
+                    <div class="col-md-4">
+                        <h6 class="text-muted">Mantenimientos en Sem. 6:</h6>
+                        <h3 id="res_mant_proyectados" class="text-warning fw-bold">--</h3>
                     </div>
-                    <div class="col-4">
-                        <h6>Constante de Desgaste (k):</h6>
-                        <h3 id="valorK" class="text-primary">--</h3>
+                    <div class="col-md-4">
+                        <h6 class="text-muted">Tasa de Crecimiento (k):</h6>
+                        <h3 id="res_valor_k" class="text-primary fw-bold">--</h3>
                     </div>
                 </div>
-                <canvas id="graficaPrediccion"></canvas>
+                <div style="height: 350px;">
+                    <canvas id="graficaCrecimiento"></canvas>
+                </div>
+            </div>
+            <div class="modal-footer">
+                
             </div>
         </div>
     </div>

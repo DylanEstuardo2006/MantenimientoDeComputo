@@ -538,88 +538,78 @@ function guardarNuevoDispositivo() {
 
 }
 
-/* =========================================
- ? MODAL DE GRAFICA DE PREDICCIÓN DE FALLO
-    =======================================
-*/
-let miGrafica; // Variable global para poder destruir la gráfica anterior
+/* ============================================================
+? FUNCIÓN: VER PREDICCIÓN (MODELO DE CRECIMIENTO POBLACIONAL)
+   ============================================================ */
+let miGrafica; // Variable para controlar la gráfica
 
 async function verPrediccion(id) {
-    const response = await fetch(`https://pratica-5b-node-s1hu.vercel.app/api/ecuaciones/prediccion/${id}`);
-    const res = await response.json();
+    // 1. URL Dinámica
+    const url = `https://pratica-5b-node-s1hu.vercel.app/api/dispositivos/analisis/${id}`;
 
-    if (res.ok) {
-        const data = res.data;
+    try {
+        const response = await fetch(url);
+        const res = await response.json();
 
-        // 1. Llenar los textos
-        document.getElementById('diasFallo').innerText = data.prediccion.dias_para_fallo + " días";
-        document.getElementById('valorK').innerText = Number(data.decremento_k).toFixed(5);
-        document.getElementById('rendimiento5Meses').innerText = (100 * Math.exp(data.decremento_k * 5)).toFixed(2) + " %";
-        document.getElementById('nombreEquipoModal').innerText = data.equipo || "Dispositivo #" + id;
-        // 2. Generar puntos para la curva P = P0 * e^(kt)
-        const puntosY = [];
-        const labels = [];
-        for (let t = 0; t <= 5; t += 0.5) { // Proyección a 5 meses
-            const p = 100 * Math.exp(data.decremento_k * t);
-            puntosY.push(p.toFixed(2));
-            labels.push(`Mes ${t}`);
+        console.log("Datos recibidos de la API:", res); // Mira esto en F12 -> Consola
+
+        // 2. Extraer datos del JSON (siguiendo tu estructura)
+        const nombre = res.header.dispositivo;
+        const k = parseFloat(res.modelo_matematico.constante_k);
+        const C = parseFloat(res.datos_base.M1_semana_1); // Usamos M1_semana_1 como la constante C inicial
+        const semPara10 = res.modelo_matematico.semanas_para_10;
+        const mantSem6 = res.modelo_matematico.proyeccion_semana_6;
+
+        // 3. Actualizar la interfaz (Asegúrate de que estos IDs existan en tu HTML)
+        document.getElementById('nombreEquipoModal').innerText = nombre;
+        document.getElementById('res_semanas_limite').innerText = semPara10.toFixed(2) + " Sem.";
+        document.getElementById('res_mant_proyectados').innerText = mantSem6.toFixed(1) + " Mant.";
+        document.getElementById('res_valor_k').innerText = k.toFixed(4);
+
+        // 4. Dibujar la gráfica
+        const ctx = document.getElementById('graficaCrecimiento').getContext('2d');
+        if (window.miGrafica instanceof Chart) {
+            window.miGrafica.destroy();
         }
 
-        // 3. Dibujar/Actualizar Gráfica
-        const ctx = document.getElementById('graficaPrediccion').getContext('2d');
-        if (miGrafica) miGrafica.destroy(); // Limpiar si ya había una
+        // Generamos los puntos del modelo para la gráfica (Semana 1 a 8)
+        const labels = [];
+        const valoresM = [];
+        for (let t = 1; t <= 8; t++) {
+            // Fórmula: M = C * e^(k*(t-1))
+            let m = C * Math.exp(k * (t - 1));
+            labels.push(`Semana ${t}`);
+            valoresM.push(m.toFixed(2));
+        }
 
-        miGrafica = new Chart(ctx, {
+        window.miGrafica = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'Curva de Rendimiento (%)',
-                    data: puntosY,
-                    borderColor: '#198754',
-                    tension: 0.3,
+                    label: 'Proyección Mantenimientos',
+                    data: valoresM,
+                    borderColor: '#0d6efd',
+                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
                     fill: true,
-                    backgroundColor: 'rgba(25, 135, 84, 0.1)'
+                    tension: 0.3
+                }, {
+                    label: 'Límite Crítico (10)',
+                    data: Array(8).fill(10),
+                    borderColor: 'red',
+                    borderDash: [5, 5],
+                    pointRadius: 0,
+                    fill: false
                 }]
-            }
+            },
+            options: { responsive: true, maintainAspectRatio: false }
         });
 
-        // Abrir el modal
+        // Mostrar el modal
         new bootstrap.Modal(document.getElementById('modalPrediccion')).show();
-    } else {
-        alert("Este equipo aún no tiene suficientes registros (mínimo 2).");
-    }
-}
-async function cargarPrioridades() {
-    const response = await fetch('https://pratica-5b-node-s1hu.vercel.app/api/ecuaciones/estado-mantenimiento');
-    const res = await response.json();
 
-    if (res.ok) {
-        const laboratorios = res.data;
-        const contenedor = document.getElementById('contenedor-prioridad');
-        contenedor.innerHTML = ''; // Limpiar
-
-        laboratorios.forEach(lab => {
-            const promedio = parseFloat(lab.promedio_rendimiento);
-            // Lógica de colores según el promedio
-            let colorCard = "bg-success";
-            if (lab.promedio_rendimiento < 75) colorCard = "bg-warning text-dark";
-            if (lab.promedio_rendimiento < 50) colorCard = "bg-danger text-white";
-
-            contenedor.innerHTML += `
-        <div class="col-12 col-md-6 col-lg-3"> 
-            <div class="card ${colorCard} shadow border-0 h-100">
-                <div class="card-body text-center p-4">
-                    <h6 class="text-uppercase opacity-75 small">Laboratorio ${lab.nombreLaboratorio}</h6>
-                    <h2 class="display-6 fw-bold m-0">${promedio}%</h2>
-                    <hr class="opacity-25">
-                    <p class="card-text small mb-0">
-                        <i class="bi bi-exclamation-triangle"></i> Equipos Críticos: ${lab.equipos_criticos}
-                    </p>
-                </div>
-            </div>
-        </div>
-    `;
-        });
+    } catch (error) {
+        console.error("Error al obtener datos:", error);
+        alert("El dispositivo .");
     }
 }
