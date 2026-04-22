@@ -539,63 +539,91 @@ function guardarNuevoDispositivo() {
 }
 
 /* ============================================================
-? FUNCIÓN: VER PREDICCIÓN (MODELO DE CRECIMIENTO POBLACIONAL)
+   ? FUNCIÓN: VER PREDICCIÓN
+   Encargada de consumir la API, procesar el modelo matemático 
+   y actualizar la UI del modal.
    ============================================================ */
-let miGrafica; // Variable para controlar la gráfica
+let miGrafica; // Variable global para destruir instancias previas de gráficas
 
 async function verPrediccion(id) {
-    // 1. URL Dinámica
+    // 1. URL Dinámica: Construimos la ruta hacia el endpoint específico del dispositivo
     const url = `https://pratica-5b-node-s1hu.vercel.app/api/dispositivos/analisis/${id}`;
 
     try {
+        // Petición al servidor
         const response = await fetch(url);
-        const res = await response.json();
+        const res = await response.json(); // Convertimos la respuesta a formato JSON
 
-        console.log("Datos recibidos de la API:", res); // Mira esto en F12 -> Consola
+        console.log("Datos recibidos de la API:", res); // Útil para depurar en consola (F12)
 
-        // 2. Extraer datos del JSON (siguiendo tu estructura)
+        // 2. Extraer datos del JSON (Mapeo de variables según la estructura del JSON)
         const nombre = res.header.dispositivo;
         const k = parseFloat(res.modelo_matematico.constante_k);
-        const C = parseFloat(res.datos_base.M1_semana_1); // Usamos M1_semana_1 como la constante C inicial
+        const C = parseFloat(res.datos_base.M1_semana_1); // Constante de inicio (semana 1)
         const semPara10 = res.modelo_matematico.semanas_para_10;
         const mantSem6 = res.modelo_matematico.proyeccion_semana_6;
 
-        // 3. Actualizar la interfaz (Asegúrate de que estos IDs existan en tu HTML)
+        // 3. Actualizar la interfaz (Inyección de datos en los elementos HTML)
         document.getElementById('nombreEquipoModal').innerText = nombre;
         document.getElementById('res_semanas_limite').innerText = semPara10.toFixed(2) + " Sem.";
+
+        // --- LÓGICA DE DECISIÓN (Cerebro del sistema) ---
+        // Clasificamos el estado del dispositivo basándonos en semanas restantes
+        const bloque = document.getElementById('bloqueDecision');
+        const titulo = document.getElementById('tituloDecision');
+        const cuerpo = document.getElementById('cuerpoDecision');
+
+        // Umbrales de riesgo (semáforo)
+        if (semPara10 < 2) { // Riesgo inminente
+            bloque.className = "alert alert-danger mt-3";
+            titulo.innerText = "🔴 CRÍTICO: Acción Inmediata";
+            cuerpo.innerText = "El equipo llegará al límite de 10 mantenimientos en menos de 2 semanas.";
+        } else if (semPara10 < 5) { // Riesgo moderado
+            bloque.className = "alert alert-warning mt-3";
+            titulo.innerText = "⚠️ ADVERTENCIA: Mantenimiento Preventivo";
+            cuerpo.innerText = "La tasa de fallos está aumentando. Agende mantenimiento pronto.";
+        } else { // Estado saludable
+            bloque.className = "alert alert-success mt-3";
+            titulo.innerText = "✅ ESTABLE: Monitoreo Normal";
+            cuerpo.innerText = "El equipo muestra un comportamiento estable.";
+        }
+
         document.getElementById('res_mant_proyectados').innerText = mantSem6.toFixed(1) + " Mant.";
         document.getElementById('res_valor_k').innerText = k.toFixed(4);
 
-        // 4. Dibujar la gráfica
+        // 4. Dibujar la gráfica (Chart.js)
         const ctx = document.getElementById('graficaCrecimiento').getContext('2d');
+
+        // Destruimos la gráfica existente si ya se había generado una anteriormente
         if (window.miGrafica instanceof Chart) {
             window.miGrafica.destroy();
         }
 
-        // Generamos los puntos del modelo para la gráfica (Semana 1 a 8)
+        // Generamos los puntos de datos para la proyección (t=1 hasta t=8)
         const labels = [];
         const valoresM = [];
         for (let t = 1; t <= 8; t++) {
-            // Fórmula: M = C * e^(k*(t-1))
+            // Aplicamos la fórmula matemática: M = C * e^(k*(t-1))
             let m = C * Math.exp(k * (t - 1));
             labels.push(`Semana ${t}`);
             valoresM.push(m.toFixed(2));
         }
 
+        // Renderizado de la gráfica de líneas
         window.miGrafica = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: labels,
+                labels: labels, // Etiquetas del eje X (Semanas)
                 datasets: [{
                     label: 'Proyección Mantenimientos',
-                    data: valoresM,
+                    data: valoresM, // Valores calculados
                     borderColor: '#0d6efd',
                     backgroundColor: 'rgba(13, 110, 253, 0.1)',
                     fill: true,
                     tension: 0.3
                 }, {
                     label: 'Límite Crítico (10)',
-                    data: Array(8).fill(10),
+                    data: Array(8).fill(10), // Línea constante para marcar el límite
                     borderColor: 'red',
                     borderDash: [5, 5],
                     pointRadius: 0,
@@ -605,10 +633,11 @@ async function verPrediccion(id) {
             options: { responsive: true, maintainAspectRatio: false }
         });
 
-        // Mostrar el modal
+        // Finalmente, mostramos el modal mediante Bootstrap
         new bootstrap.Modal(document.getElementById('modalPrediccion')).show();
 
     } catch (error) {
+        // Manejo de errores (por si la API falla o no hay datos)
         console.error("Error al obtener datos:", error);
         alert("El dispositivo no ha pasado por mantenimientos correctivos en el lapso establecido.");
     }
