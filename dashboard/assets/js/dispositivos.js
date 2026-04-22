@@ -574,11 +574,11 @@ async function verPrediccion(id) {
         const cuerpo = document.getElementById('cuerpoDecision');
 
         // Umbrales de riesgo (semáforo)
-        if (semPara10 < 3) { // Riesgo inminente
+        if (semPara10 < 4) { // Riesgo inminente
             bloque.className = "alert alert-danger mt-3";
             titulo.innerText = "🔴 CRÍTICO: Acción Inmediata";
-            cuerpo.innerText = "El equipo llegará al límite de 10 mantenimientos en menos de 2 semanas.";
-        } else if (semPara10 < 5) { // Riesgo moderado
+            cuerpo.innerText = "El equipo llegará al límite de 10 mantenimientos en menos de 4 semanas.";
+        } else if (semPara10 < 6) { // Riesgo moderado
             bloque.className = "alert alert-warning mt-3";
             titulo.innerText = "⚠️ ADVERTENCIA: Mantenimiento Preventivo";
             cuerpo.innerText = "La tasa de fallos está aumentando. Agende mantenimiento pronto.";
