@@ -574,7 +574,7 @@ async function verPrediccion(id) {
         const cuerpo = document.getElementById('cuerpoDecision');
 
         // Umbrales de riesgo (semáforo)
-        if (semPara10 < 2) { // Riesgo inminente
+        if (semPara10 < 3) { // Riesgo inminente
             bloque.className = "alert alert-danger mt-3";
             titulo.innerText = "🔴 CRÍTICO: Acción Inmediata";
             cuerpo.innerText = "El equipo llegará al límite de 10 mantenimientos en menos de 2 semanas.";
