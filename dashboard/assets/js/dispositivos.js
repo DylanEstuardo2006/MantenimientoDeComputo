@@ -610,6 +610,6 @@ async function verPrediccion(id) {
 
     } catch (error) {
         console.error("Error al obtener datos:", error);
-        alert("El dispositivo .");
+        alert("El dispositivo no ha pasado por mantenimientos correctivos en el lapso establecido.");
     }
 }
